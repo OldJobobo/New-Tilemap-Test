@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
             SmoothGrass();
         }
 
-        AddOre(swapMap);
+        AddCoal(swapMap);
        
         
         for (int i = 0; i < coalSmoothing; i++)
@@ -189,8 +189,9 @@ public class GameManager : MonoBehaviour
                     //if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     //{
                         int neighborOreTiles = GetSurroundingTileCount(x, y, tiles[4], swapMap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
 
-                        if (neighborOreTiles > 3 && neighborOreTiles < 5)
+                    if (neighborOreTiles > 3 && neighborOreTiles < 5 && neighborWallTiles > 5)
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
                         else if (neighborOreTiles < 3 || neighborOreTiles >= 5)
                         {
@@ -245,7 +246,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void AddOre(Tilemap tilemap)
+    void AddCoal(Tilemap tilemap)
     {
         
 
@@ -258,16 +259,20 @@ public class GameManager : MonoBehaviour
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int rNumCoal = pseudoRandom.Next(0, 100);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        if (neighborWallTiles > 5)
+                        {
+                            int rNumCoal = pseudoRandom.Next(0, 100);
 
-                        if (rNumCoal < CoalPercentage)
-                        {
-                            tilemap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
-                           
-                        }
-                        else
-                        {
-                            tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                            if (rNumCoal < CoalPercentage)
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
+
+                            }
+                            else
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                            }
                         }
                     }
                 }
