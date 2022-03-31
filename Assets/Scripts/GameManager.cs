@@ -53,10 +53,13 @@ public class GameManager : MonoBehaviour
         }
 
         AddOre(swapMap);
+       
+        
         for (int i = 0; i < coalSmoothing; i++)
         {
             SmoothCoal();
         }
+        
     }
 
     void GenerateMapSeed()
@@ -183,17 +186,17 @@ public class GameManager : MonoBehaviour
             {
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] || swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[4])
                 {
-                    if (x > 1 || x < width - 2 || y > 1 || y < height - 2)
-                    {
+                    //if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
+                    //{
                         int neighborOreTiles = GetSurroundingTileCount(x, y, tiles[4], swapMap);
 
-                        if (neighborOreTiles > 4)
+                        if (neighborOreTiles > 3 && neighborOreTiles < 5)
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
-                        else if (neighborOreTiles < 4)
+                        else if (neighborOreTiles < 3 || neighborOreTiles >= 5)
                         {
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
                         }
-                    }
+                    //}
                 }
 
             }
@@ -253,13 +256,14 @@ public class GameManager : MonoBehaviour
 
                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] )
                 {
-                    if (x > 1 || x < width - 2 || y > 1 || y < height - 2)
+                    if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
                         int rNumCoal = pseudoRandom.Next(0, 100);
 
                         if (rNumCoal < CoalPercentage)
                         {
                             tilemap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
+                           
                         }
                         else
                         {
@@ -270,6 +274,7 @@ public class GameManager : MonoBehaviour
 
             }
         }
+        SwapTilemap(groundMap, swapMap);
     }
 
     // Update is called once per frame
