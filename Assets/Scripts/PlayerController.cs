@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Vector3 origPos, targetPos;
     private float timeToMove = 0.2f;
+    private SpriteRenderer renderer;
 
 
    
@@ -19,10 +20,15 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+        
+    }
+
+    private void Update()
+    {
        
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         
@@ -30,12 +36,18 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.left))
+            {
+                renderer.flipX = false;
                 StartCoroutine(MovePlayer(Vector3.right));
+            }
         }
         if (Input.GetKey(KeyCode.D) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.right))
+            {
+                renderer.flipX = true;
                 StartCoroutine(MovePlayer(Vector3.left));
+            }
         }
         if (Input.GetKey(KeyCode.W) && !isMoving)
         {
@@ -45,7 +57,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.S) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.down))
-            StartCoroutine(MovePlayer(Vector3.up));
+                StartCoroutine(MovePlayer(Vector3.up));
         }
 
     }
@@ -83,23 +95,5 @@ public class PlayerController : MonoBehaviour
             return false;
     }
 
-    Vector3Int FindPlayerSpawn(Tilemap tilemap)
-    {
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            { 
-            
-
-
-            }
-        }
-
-
-
-
-
-                return null;
-    }
+   
 }

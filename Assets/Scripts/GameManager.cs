@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public Tilemap groundMap;
     public Tilemap swapMap;
     public Tile[] tiles;
+    public GameObject player;
     public string seed;
     public bool useRandomSeed;
 
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     private int height = 100;
     private int previous;
     private System.Random pseudoRandom;
+    private Vector3Int playerSpawn = new Vector3Int(0, 0, 0);
 
 
 
@@ -59,6 +61,12 @@ public class GameManager : MonoBehaviour
         {
             SmoothCoal();
         }
+        
+        playerSpawn = FindPlayerSpawn(groundMap);
+        Debug.Log("FindPlayerSpawn returned: " + playerSpawn);
+        
+
+        SpawnPlayer(playerSpawn);
         
     }
 
@@ -280,6 +288,47 @@ public class GameManager : MonoBehaviour
             }
         }
         SwapTilemap(groundMap, swapMap);
+    }
+
+    Vector3Int FindPlayerSpawn(Tilemap tilemap)
+    {
+        bool isBlocking = true;
+        
+        Vector3Int spawnPos = new Vector3Int(0, 0, 0);
+
+        while (isBlocking)
+        {
+            int randomX = Random.Range(2, 99);
+            int randomY = Random.Range(2, 99);
+
+            Vector3Int testPos = new Vector3Int(randomX, randomY, 0);
+
+            if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4])
+            {
+                isBlocking = true;
+                Debug.Log("Blocking");
+            } else
+            {
+                isBlocking = false;
+                Debug.Log("Found Spawnpoint at: (" + randomX + ", " + randomY + ")");
+                spawnPos = testPos;
+                
+            }
+           
+        }
+        return spawnPos;
+
+    }
+
+    void SpawnPlayer(Vector3Int spawnPos)
+    {
+
+        Vector3 playerSpawnPoint = groundMap.CellToWorld(spawnPos);
+        playerSpawnPoint = new Vector3(playerSpawnPoint.x + .5f, playerSpawnPoint.y + .5f, 0);
+        player.transform.position = playerSpawnPoint;
+        
+        
+        player.SetActive(true);
     }
 
     // Update is called once per frame
