@@ -413,7 +413,7 @@ public class GameManager : MonoBehaviour
 
             Vector3Int testPos = new Vector3Int(randomX, randomY, 0);
 
-            if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4])
+            if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4] || tilemap.GetTile(testPos) == tiles[5] || tilemap.GetTile(testPos) == tiles[6])
             {
                 isBlocking = true;
                
