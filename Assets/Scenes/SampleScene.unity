@@ -235,13 +235,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aabb831050d55d7419a368da168ce771, type: 2}
   - {fileID: 11400000, guid: 36204e6c6ea88c54595fa30db01fffe0, type: 2}
   - {fileID: 11400000, guid: 921782213e1e067428a3349572b33bee, type: 2}
-  seed: rgret54363ytjt
+  - {fileID: 11400000, guid: 17976974cc986b54bbd27b785ab9127a, type: 2}
+  seed: 582clf5f6$&hf%
   useRandomSeed: 0
   StonePercentage: 45
-  WaterPercentage: 37
+  WaterPercentage: 42
   GrassPercentage: 47
-  CoalPercentage: 50
-  coalSmoothing: 3
+  CoalPercentage: 48
+  coalSmoothing: 1
 --- !u!4 &453629575
 Transform:
   m_ObjectHideFlags: 0
