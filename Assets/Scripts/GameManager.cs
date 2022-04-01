@@ -14,15 +14,23 @@ public class GameManager : MonoBehaviour
     public bool useRandomSeed;
 
     [Range(0, 100)]
-    public int StonePercentage;
+    public int stonePercentage;
     [Range(0, 100)]
-    public int WaterPercentage;
+    public int waterPercentage;
     [Range(0, 100)]
-    public int GrassPercentage;
+    public int grassPercentage;
     [Range(0, 100)]
-    public int CoalPercentage;
+    public int coalPercentage;
     [Range(0, 10)]
     public int coalSmoothing;
+    [Range(0, 100)]
+    public int ironPercentage;
+    [Range(0, 10)]
+    public int ironSmoothing;
+    [Range(0, 100)]
+    public int goldPercentage;
+    [Range(0, 10)]
+    public int goldSmoothing;
 
     private int width = 100;
     private int height = 100;
@@ -55,19 +63,24 @@ public class GameManager : MonoBehaviour
         }
 
         AddCoal(swapMap);
-       
-        
+              
         for (int i = 0; i < coalSmoothing; i++)
         {
             SmoothCoal();
         }
-        
+
+        AddIron(swapMap);
+
+        for (int i = 0; i < ironSmoothing; i++)
+        {
+            SmoothIron();
+        }
+
+        AddGold(swapMap);
+
         playerSpawn = FindPlayerSpawn(groundMap);
-        Debug.Log("FindPlayerSpawn returned: " + playerSpawn);
-        
 
         SpawnPlayer(playerSpawn);
-        
     }
 
     void GenerateMapSeed()
@@ -89,7 +102,7 @@ public class GameManager : MonoBehaviour
                 int rNum = 0;
 
                 int rNumStone = pseudoRandom.Next(0, 100);
-                if (rNumStone < StonePercentage)
+                if (rNumStone < stonePercentage)
                     rNum = 3;
                 else
                     rNum = 0;
@@ -124,7 +137,7 @@ public class GameManager : MonoBehaviour
                     swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
                 else if (neighborWallTiles < 4)
                 {
-                    if (rNumWater < WaterPercentage)
+                    if (rNumWater < waterPercentage)
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[2]);
                     else
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[1]);
@@ -151,7 +164,7 @@ public class GameManager : MonoBehaviour
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[2]);
                     else if (neighborWaterTiles < 4)
                     {
-                        if (rNumGrass < GrassPercentage)
+                        if (rNumGrass < grassPercentage)
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[1]);
                         else
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[0]);
@@ -194,8 +207,7 @@ public class GameManager : MonoBehaviour
             {
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] || swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[4])
                 {
-                    //if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
-                    //{
+                   
                         int neighborOreTiles = GetSurroundingTileCount(x, y, tiles[4], swapMap);
                         int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
 
@@ -205,7 +217,33 @@ public class GameManager : MonoBehaviour
                         {
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
                         }
-                    //}
+                   
+                }
+
+            }
+        }
+        SwapTilemap(groundMap, swapMap);
+    }
+
+    void SmoothIron()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] || swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[5] )
+                {
+
+                    int neighborIronTiles = GetSurroundingTileCount(x, y, tiles[5], swapMap);
+                    int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+
+                    if (neighborIronTiles > 3 && neighborIronTiles < 5 && neighborWallTiles > 5)
+                        swapMap.SetTile(new Vector3Int(x, y, 0), tiles[5]);
+                    else if (neighborIronTiles < 3 || neighborIronTiles >= 5)
+                    {
+                        swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                    }
+
                 }
 
             }
@@ -272,9 +310,81 @@ public class GameManager : MonoBehaviour
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
-                            if (rNumCoal < CoalPercentage)
+                            if (rNumCoal < coalPercentage)
                             {
                                 tilemap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
+
+                            }
+                            else
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        SwapTilemap(groundMap, swapMap);
+    }
+
+    void AddIron(Tilemap tilemap)
+    {
+
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+
+                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3])
+                {
+                    if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
+                    {
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        if (neighborWallTiles > 5)
+                        {
+                            int rNumCoal = pseudoRandom.Next(0, 100);
+
+                            if (rNumCoal < ironPercentage)
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[5]);
+
+                            }
+                            else
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        SwapTilemap(groundMap, swapMap);
+    }
+
+    void AddGold(Tilemap tilemap)
+    {
+
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+
+                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3])
+                {
+                    if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
+                    {
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        if (neighborWallTiles > 5)
+                        {
+                            int rNumCoal = pseudoRandom.Next(0, 100);
+
+                            if (rNumCoal < goldPercentage)
+                            {
+                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[6]);
 
                             }
                             else
@@ -306,11 +416,11 @@ public class GameManager : MonoBehaviour
             if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4])
             {
                 isBlocking = true;
-                Debug.Log("Blocking");
+               
             } else
             {
                 isBlocking = false;
-                Debug.Log("Found Spawnpoint at: (" + randomX + ", " + randomY + ")");
+                
                 spawnPos = testPos;
                 
             }
@@ -326,8 +436,8 @@ public class GameManager : MonoBehaviour
         Vector3 playerSpawnPoint = groundMap.CellToWorld(spawnPos);
         playerSpawnPoint = new Vector3(playerSpawnPoint.x + .5f, playerSpawnPoint.y + .5f, 0);
         player.transform.position = playerSpawnPoint;
-        
-        
+
+        Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
         player.SetActive(true);
     }
 
