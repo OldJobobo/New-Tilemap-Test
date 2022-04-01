@@ -123,10 +123,11 @@ public class PlayerController : MonoBehaviour
         
         if (groundMap.GetTile(targetCell) == blockingTiles[0])
         {
-            //console.text = console.text + "\n Stone.";
+           
             groundMap.SetTile(targetCell, dirtTile);
             GameObject stoneObj = Instantiate(roughStone, groundMap.CellToWorld(targetCell), Quaternion.identity);
             stoneObj.transform.SetParent(groundMap.transform);
+            console.text = console.text + "\nYou mined Stone.";
         }
 
     }
