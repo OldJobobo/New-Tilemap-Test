@@ -8,9 +8,10 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public Tilemap groundMap;
-    public Tile wallTile;
     public Tile[] blockingTiles;
+    public Tile dirtTile;
     public Text console;
+    public GameObject roughStone;
 
     private bool isMoving;
     private Vector3 origPos, targetPos;
@@ -58,21 +59,23 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.up))
-                StartCoroutine(MovePlayer(Vector3.down));
+            { StartCoroutine(MovePlayer(Vector3.down)); }
+            else
+            {
+                DoTurn(Vector3.up);
+            }
         }
-        else
-        {
-            DoTurn(Vector3.up);
-        }
+        
         if (Input.GetKey(KeyCode.S) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.down))
-                StartCoroutine(MovePlayer(Vector3.up));
+            { StartCoroutine(MovePlayer(Vector3.up)); }
+            else
+            {
+                DoTurn(Vector3.down);
+            }
         }
-        else
-        {
-            DoTurn(Vector3.down);
-        }
+        
 
     }
 
@@ -118,21 +121,14 @@ public class PlayerController : MonoBehaviour
         Vector3 playerPos = transform.position;
         Vector3Int targetCell = groundMap.WorldToCell(playerPos + direction);
         
-        foreach (Tile tile in blockingTiles)
-            if (tile == groundMap.GetTile(targetCell))
-            {
-                Debug.Log("blocking");
+        if (groundMap.GetTile(targetCell) == blockingTiles[0])
+        {
+            //console.text = console.text + "\n Stone.";
+            groundMap.SetTile(targetCell, dirtTile);
+            GameObject stoneObj = Instantiate(roughStone, groundMap.CellToWorld(targetCell), Quaternion.identity);
+            stoneObj.transform.SetParent(groundMap.transform);
+        }
 
-                if (tile == blockingTiles[1])
-                {
-                    console.text = console.text + "\n Stone.";
-                }
-            }
-    
-       
-           // 
-
-        
     }
    
 }

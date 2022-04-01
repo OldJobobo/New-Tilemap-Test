@@ -143,6 +143,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 820433757}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: dirtTile
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f41f96e854df804183d50023f6ab19e, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: wallTile
       value: 
       objectReference: {fileID: 11400000, guid: 36204e6c6ea88c54595fa30db01fffe0, type: 2}
@@ -155,9 +159,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: roughStone
+      value: 
+      objectReference: {fileID: 8519888940495470345, guid: 56fcef9db0742ea469cb560ef1d8a1e9, type: 3}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: rigidBody2D
       value: 
       objectReference: {fileID: 414039500}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: blockingTiles.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: blockingTiles.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 36204e6c6ea88c54595fa30db01fffe0, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: blockingTiles.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 921782213e1e067428a3349572b33bee, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: blockingTiles.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 17976974cc986b54bbd27b785ab9127a, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: blockingTiles.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3fcdc8ea2e9af1e4993c84ad15be3b9d, type: 2}
     - target: {fileID: 6139509739043715832, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -204,7 +232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8337921231838742954, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8337921231838742954, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: m_SpriteSortPoint
@@ -544,8 +572,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.0707, y: -0.000019074}
-  m_SizeDelta: {x: 500.31, y: 185.86}
+  m_AnchoredPosition: {x: 5.0707, y: 139.26068}
+  m_SizeDelta: {x: 500.31, y: 464.3813}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &820433757
 MonoBehaviour:
@@ -574,11 +602,11 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 6
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Player Console
 --- !u!222 &820433758
