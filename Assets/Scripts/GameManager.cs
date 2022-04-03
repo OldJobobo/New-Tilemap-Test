@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public Tilemap groundMap;
     public Tilemap swapMap;
     public Tile[] tiles;
+    public CustomTile StoneTileData;
     public GameObject player;
     public string seed;
     public bool useRandomSeed;
@@ -444,6 +445,18 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            
+            
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int gridPos = groundMap.WorldToCell(mousePos);
+            TileBase clickedTile = groundMap.GetTile(gridPos);
+
+            print(StoneTileData.health);
+            
+        }
     }
+
+
 }

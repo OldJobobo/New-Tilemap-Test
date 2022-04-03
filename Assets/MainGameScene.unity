@@ -167,6 +167,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 414039500}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: StoneTileData
+      value: 
+      objectReference: {fileID: 11400000, guid: fd8a81609313019489be47584faa2dbc, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: blockingTiles.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -337,6 +341,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 921782213e1e067428a3349572b33bee, type: 2}
   - {fileID: 11400000, guid: 17976974cc986b54bbd27b785ab9127a, type: 2}
   - {fileID: 11400000, guid: 3fcdc8ea2e9af1e4993c84ad15be3b9d, type: 2}
+  StoneTileData: {fileID: 11400000, guid: fd8a81609313019489be47584faa2dbc, type: 2}
   player: {fileID: 414039497}
   seed: 867ttruyf
   useRandomSeed: 0

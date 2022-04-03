@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public Tilemap groundMap;
     public Tile[] blockingTiles;
     public Tile dirtTile;
+    public CustomTile StoneTileData;
     public Text console;
     public GameObject roughStone;
 
@@ -123,11 +124,14 @@ public class PlayerController : MonoBehaviour
         
         if (groundMap.GetTile(targetCell) == blockingTiles[0])
         {
-           
-            groundMap.SetTile(targetCell, dirtTile);
-            GameObject stoneObj = Instantiate(roughStone, groundMap.CellToWorld(targetCell), Quaternion.identity);
-            stoneObj.transform.SetParent(groundMap.transform);
-            console.text = console.text + "\nYou mined Stone.";
+
+            // groundMap.SetTile(targetCell, dirtTile);
+            // GameObject stoneObj = Instantiate(roughStone, groundMap.CellToWorld(targetCell), Quaternion.identity);
+            // stoneObj.transform.SetParent(groundMap.transform);
+            // console.text = console.text + "\nYou mined Stone.";
+
+            StoneTileData.health = StoneTileData.health - 1;
+
         }
 
     }
