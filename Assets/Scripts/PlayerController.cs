@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
             // stoneObj.transform.SetParent(groundMap.transform);
             // console.text = console.text + "\nYou mined Stone.";
 
-            StoneTileData.health = StoneTileData.health - 1;
+            //StoneTileData.health = StoneTileData.health - 1;
 
         }
 

@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using CreativeSpore.SuperTilemapEditor;
 
 public class GameManager : MonoBehaviour
 {
     public Grid grid;
     public Tilemap groundMap;
     public Tilemap swapMap;
-    public Tile[] tiles;
-    public CustomTile StoneTileData;
+    public UnityEngine.Tilemaps.Tile[] tiles;
+    public CreativeSpore.SuperTilemapEditor.Tile[] steTiles;
+    private CustomTile[,] tileData;
+    public CustomTile customTile;
     public GameObject player;
     public string seed;
     public bool useRandomSeed;
+    public STETilemap newTilemap;
 
     [Range(0, 100)]
     public int stonePercentage;
@@ -96,10 +100,12 @@ public class GameManager : MonoBehaviour
         currentCell.x = 0;
         currentCell.y = 0;
 
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
+               
                 int rNum = 0;
 
                 int rNumStone = pseudoRandom.Next(0, 100);
@@ -111,6 +117,11 @@ public class GameManager : MonoBehaviour
                 if (currentCell.x == 0 || currentCell.x == width - 1 || currentCell.y == 0 || currentCell.y == height - 1)
                 {
                     groundMap.SetTile(currentCell, tiles[3]);
+                   // groundMap.GetInstantiatedObject
+                    
+                    
+                   
+                   
                 }
                 else
                 {
@@ -253,7 +264,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    int GetSurroundingTileCount(int gridX, int gridY, Tile tileType, Tilemap map)
+    int GetSurroundingTileCount(int gridX, int gridY, UnityEngine.Tilemaps.Tile tileType, Tilemap map)
     {
         int count = 0;
         for (int neighborX = gridX - 1; neighborX <= gridX + 1; neighborX++)
@@ -451,9 +462,10 @@ public class GameManager : MonoBehaviour
             
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPos = groundMap.WorldToCell(mousePos);
-            TileBase clickedTile = groundMap.GetTile(gridPos);
+            UnityEngine.Tilemaps.Tile clickedTile = groundMap.GetTile<UnityEngine.Tilemaps.Tile>(gridPos);
 
-            print(StoneTileData.health);
+           
+            print(clickedTile.gameObject.GetComponent<CustomTile>().GetTileType()  + " : " + clickedTile.gameObject.GetComponent<CustomTile>().GetHealth() );
             
         }
     }
