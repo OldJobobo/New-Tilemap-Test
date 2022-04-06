@@ -1234,7 +1234,14 @@ MonoBehaviour:
       vertices: []
       type: 0
     paramContainer:
-      m_paramList: []
+      m_paramList:
+      - name: health
+        _paramType: 2
+        _boolValue: 0
+        _intValue: 4
+        _floatValue: 0
+        _stringValue: 
+        _objectValue: {fileID: 0}
     prefabData:
       prefab: {fileID: 0}
       offset: {x: 0, y: 0, z: 0}
@@ -1253,7 +1260,14 @@ MonoBehaviour:
       vertices: []
       type: 0
     paramContainer:
-      m_paramList: []
+      m_paramList:
+      - name: health
+        _paramType: 2
+        _boolValue: 0
+        _intValue: 4
+        _floatValue: 0
+        _stringValue: 
+        _objectValue: {fileID: 0}
     prefabData:
       prefab: {fileID: 0}
       offset: {x: 0, y: 0, z: 0}
@@ -1804,7 +1818,14 @@ MonoBehaviour:
       vertices: []
       type: 0
     paramContainer:
-      m_paramList: []
+      m_paramList:
+      - name: health
+        _paramType: 2
+        _boolValue: 0
+        _intValue: 8
+        _floatValue: 0
+        _stringValue: 
+        _objectValue: {fileID: 0}
     prefabData:
       prefab: {fileID: 0}
       offset: {x: 0, y: 0, z: 0}
@@ -1823,7 +1844,14 @@ MonoBehaviour:
       vertices: []
       type: 0
     paramContainer:
-      m_paramList: []
+      m_paramList:
+      - name: health
+        _paramType: 2
+        _boolValue: 0
+        _intValue: 6
+        _floatValue: 0
+        _stringValue: 
+        _objectValue: {fileID: 0}
     prefabData:
       prefab: {fileID: 0}
       offset: {x: 0, y: 0, z: 0}

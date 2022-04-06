@@ -10,13 +10,16 @@ public class GameManager : MonoBehaviour
     public Tilemap groundMap;
     public Tilemap swapMap;
     public UnityEngine.Tilemaps.Tile[] tiles;
-    public CreativeSpore.SuperTilemapEditor.Tile[] steTiles;
+
     private CustomTile[,] tileData;
     public CustomTile customTile;
     public GameObject player;
     public string seed;
     public bool useRandomSeed;
     public STETilemap newTilemap;
+    public STETilemap newSwapmap;
+
+
 
     [Range(0, 100)]
     public int stonePercentage;
@@ -37,11 +40,19 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 100;
-    private int height = 100;
+    private int width = 200;
+    private int height = 200;
     private int previous;
     private System.Random pseudoRandom;
-    private Vector3Int playerSpawn = new Vector3Int(0, 0, 0);
+    private Vector2 playerSpawn = new Vector2(0, 0);
+
+    private uint dirtTile = 0;
+    private uint stoneTile = 63;
+    private uint waterTile = 2;
+    private uint grassTile = 31;
+    private uint coalTile = 64;
+    private uint ironTile = 94;
+    private uint goldTile = 93;
 
 
 
@@ -50,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         GenerateMapSeed();
 
-        SwapTilemap(swapMap, groundMap);
+        SwapTilemap(newSwapmap, newTilemap);
 
         for (int i = 0; i < 5; i++)
         {
@@ -67,29 +78,32 @@ public class GameManager : MonoBehaviour
             SmoothGrass();
         }
 
-        AddCoal(swapMap);
+        AddCoal(newSwapmap);
               
         for (int i = 0; i < coalSmoothing; i++)
         {
             SmoothCoal();
         }
 
-        AddIron(swapMap);
+        AddIron(newSwapmap);
 
         for (int i = 0; i < ironSmoothing; i++)
         {
             SmoothIron();
         }
 
-        AddGold(swapMap);
+        AddGold(newSwapmap);
 
-        playerSpawn = FindPlayerSpawn(groundMap);
+        playerSpawn = FindPlayerSpawn(newTilemap);
 
         SpawnPlayer(playerSpawn);
     }
 
     void GenerateMapSeed()
     {
+       
+
+
         if (useRandomSeed)
         { seed = Time.time.ToString(); }
 
@@ -117,15 +131,16 @@ public class GameManager : MonoBehaviour
                 if (currentCell.x == 0 || currentCell.x == width - 1 || currentCell.y == 0 || currentCell.y == height - 1)
                 {
                     groundMap.SetTile(currentCell, tiles[3]);
-                   // groundMap.GetInstantiatedObject
-                    
-                    
-                   
-                   
+                    newTilemap.SetTileData(x, y, stoneTile);
                 }
-                else
+                else if(rNum == 3)
+                {
+                    newTilemap.SetTileData(x, y, stoneTile);
+
+                } else
                 {
                     groundMap.SetTile(currentCell, tiles[rNum]);
+                    newTilemap.SetTileData(x, y, dirtTile);
                 }
 
                 currentCell.x = x;
@@ -142,23 +157,32 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile , newSwapmap);
                 int rNumWater = pseudoRandom.Next(0, 100);
 
                 if (neighborWallTiles > 4)
+                {
                     swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                    newSwapmap.SetTileData(x, y, 63);
+                }
                 else if (neighborWallTiles < 4)
                 {
                     if (rNumWater < waterPercentage)
+                    {
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[2]);
+                        newSwapmap.SetTileData(x, y, waterTile);
+                    }
                     else
+                    {
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[1]);
-                }
+                        newSwapmap.SetTileData(x, y, grassTile);
+                    }
+                    }
                     
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
     void SmoothWater()
@@ -169,23 +193,32 @@ public class GameManager : MonoBehaviour
             {
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) != tiles[3])
                 {
-                    int neighborWaterTiles = GetSurroundingTileCount(x, y, tiles[2], swapMap);
+                    int neighborWaterTiles = GetSurroundingTileCount(x, y, waterTile, newSwapmap);
                     int rNumGrass = pseudoRandom.Next(0, 100);
 
                     if (neighborWaterTiles > 4)
+                    {
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[2]);
+                        newSwapmap.SetTileData(x, y, waterTile);
+                    }
                     else if (neighborWaterTiles < 4)
                     {
                         if (rNumGrass < grassPercentage)
+                        {
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[1]);
+                            newSwapmap.SetTileData(x, y, grassTile);
+                        }
                         else
+                        {
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[0]);
+                            newSwapmap.SetTileData(x, y, dirtTile);
+                        }
                     }
                 }
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
     void SmoothGrass()
@@ -196,19 +229,24 @@ public class GameManager : MonoBehaviour
             {
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) != tiles[3] && swapMap.GetTile(new Vector3Int(x, y, 0)) != tiles[2])
                 {
-                    int neighborGrassTiles = GetSurroundingTileCount(x, y, tiles[1], swapMap);
-                   
+                    int neighborGrassTiles = GetSurroundingTileCount(x, y, grassTile, newTilemap);
+
                     if (neighborGrassTiles > 4)
+                    {
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[1]);
+                        newSwapmap.SetTileData(x, y, grassTile);
+                    }
+
                     else if (neighborGrassTiles < 4)
                     {
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[0]);
+                        newSwapmap.SetTileData(x, y, dirtTile);
                     }
                 }
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
     void SmoothCoal()
@@ -220,12 +258,12 @@ public class GameManager : MonoBehaviour
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] || swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[4])
                 {
                    
-                        int neighborOreTiles = GetSurroundingTileCount(x, y, tiles[4], swapMap);
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        int neighborCoalTiles = GetSurroundingTileCount(x, y, coalTile, newTilemap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
 
-                    if (neighborOreTiles > 3 && neighborOreTiles < 5 && neighborWallTiles > 5)
+                    if (neighborCoalTiles > 3 && neighborCoalTiles < 5 && neighborWallTiles > 5)
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
-                        else if (neighborOreTiles < 3 || neighborOreTiles >= 5)
+                        else if (neighborCoalTiles < 3 || neighborCoalTiles >= 5)
                         {
                             swapMap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
                         }
@@ -234,7 +272,7 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
     void SmoothIron()
@@ -246,8 +284,8 @@ public class GameManager : MonoBehaviour
                 if (swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] || swapMap.GetTile(new Vector3Int(x, y, 0)) == tiles[5] )
                 {
 
-                    int neighborIronTiles = GetSurroundingTileCount(x, y, tiles[5], swapMap);
-                    int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                    int neighborIronTiles = GetSurroundingTileCount(x, y, ironTile, newTilemap);
+                    int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
 
                     if (neighborIronTiles > 3 && neighborIronTiles < 5 && neighborWallTiles > 5)
                         swapMap.SetTile(new Vector3Int(x, y, 0), tiles[5]);
@@ -260,11 +298,11 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
 
-    int GetSurroundingTileCount(int gridX, int gridY, UnityEngine.Tilemaps.Tile tileType, Tilemap map)
+    int GetSurroundingTileCount(int gridX, int gridY, uint tileType, STETilemap map)
     {
         int count = 0;
         for (int neighborX = gridX - 1; neighborX <= gridX + 1; neighborX++)
@@ -275,7 +313,8 @@ public class GameManager : MonoBehaviour
                 {
                     if (neighborX != gridX || neighborY != gridY)
                     {
-                        if (map.GetTile(new Vector3Int(neighborX, neighborY, 0)) == tileType)
+                        //if (map.GetTile(new Vector3Int(neighborX, neighborY, 0)) == tileType)
+                        if(map.GetTileData(neighborX, neighborY) == tileType)
                         {
                             count++;
                         }
@@ -291,20 +330,22 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
-    void SwapTilemap(Tilemap origMap, Tilemap swapMap)
+    void SwapTilemap(STETilemap origMap, STETilemap swapMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
 
-                origMap.SetTile(new Vector3Int(x, y, 0), swapMap.GetTile(new Vector3Int(x, y, 0)));
-
+                //origMap.SetTile(new Vector3Int(x, y, 0), swapMap.GetTile(new Vector3Int(x, y, 0)));
+                origMap.SetTileData(x, y, swapMap.GetTileData(x, y));
+                //origMap.UpdateMesh();
+                //swapMap.UpdateMesh();
             }
         }
     }
 
-    void AddCoal(Tilemap tilemap)
+    void AddCoal(STETilemap tilemap)
     {
         
 
@@ -313,23 +354,22 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-               if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3] )
+               if (tilemap.GetTileData(x, y) == stoneTile )
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < coalPercentage)
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[4]);
-
+                                tilemap.SetTileData(x, y, coalTile);
                             }
                             else
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                                tilemap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -337,10 +377,10 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
-    void AddIron(Tilemap tilemap)
+    void AddIron(STETilemap tilemap)
     {
 
 
@@ -349,23 +389,23 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3])
+                if (tilemap.GetTileData(x, y) == stoneTile)
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < ironPercentage)
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[5]);
+                                tilemap.SetTileData(x, y, ironTile);
 
                             }
                             else
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                                tilemap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -373,10 +413,10 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
-    void AddGold(Tilemap tilemap)
+    void AddGold(STETilemap tilemap)
     {
 
 
@@ -385,23 +425,23 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-                if (tilemap.GetTile(new Vector3Int(x, y, 0)) == tiles[3])
+                if (tilemap.GetTileData(x, y) == stoneTile)
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, tiles[3], groundMap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < goldPercentage)
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[6]);
+                                tilemap.SetTileData(x, y, goldTile);
 
                             }
                             else
                             {
-                                tilemap.SetTile(new Vector3Int(x, y, 0), tiles[3]);
+                                tilemap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -409,23 +449,25 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(groundMap, swapMap);
+        SwapTilemap(newTilemap, newSwapmap);
     }
 
-    Vector3Int FindPlayerSpawn(Tilemap tilemap)
+    Vector2 FindPlayerSpawn(STETilemap tilemap)
     {
         bool isBlocking = true;
         
-        Vector3Int spawnPos = new Vector3Int(0, 0, 0);
+        Vector2 spawnPos = new Vector2(0, 0);
 
         while (isBlocking)
         {
             int randomX = Random.Range(2, 99);
             int randomY = Random.Range(2, 99);
 
-            Vector3Int testPos = new Vector3Int(randomX, randomY, 0);
+            Vector2 testPos = new Vector2(randomX, randomY);
 
-            if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4] || tilemap.GetTile(testPos) == tiles[5] || tilemap.GetTile(testPos) == tiles[6])
+            //if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4] || tilemap.GetTile(testPos) == tiles[5] || tilemap.GetTile(testPos) == tiles[6])
+            if (tilemap.GetTileData(testPos) == stoneTile || tilemap.GetTileData(testPos) == coalTile 
+                || tilemap.GetTileData(testPos) == ironTile || tilemap.GetTileData(testPos) == goldTile)
             {
                 isBlocking = true;
                
@@ -436,17 +478,20 @@ public class GameManager : MonoBehaviour
                 spawnPos = testPos;
                 
             }
+            
            
         }
         return spawnPos;
 
     }
 
-    void SpawnPlayer(Vector3Int spawnPos)
+    void SpawnPlayer(Vector2 spawnPos)
     {
 
-        Vector3 playerSpawnPoint = groundMap.CellToWorld(spawnPos);
-        playerSpawnPoint = new Vector3(playerSpawnPoint.x + .5f, playerSpawnPoint.y + .5f, 0);
+        Vector3 playerSpawnPoint = TilemapUtils.GetGridWorldPos(newTilemap, (int)spawnPos.x, (int)spawnPos.y);
+
+
+         playerSpawnPoint = new Vector3(playerSpawnPoint.x + .5f, playerSpawnPoint.y + .5f, 0);
         player.transform.position = playerSpawnPoint;
 
         Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
