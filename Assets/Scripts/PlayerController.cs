@@ -8,14 +8,19 @@ using CreativeSpore.SuperTilemapEditor;
 
 public class PlayerController : MonoBehaviour
 {
-    public Tilemap groundMap;
+    
     public STETilemap newTilemap;
-    //public Tile[] blockingTiles;
+   
     public uint[] blockingTiles;
     public Vector2 playerGridPos;
     
     
     public Text console;
+    public Text stoneAmt;
+    public Text coalAmt;
+    public Text ironAmt;
+    public Text goldAmt;
+
     public GameObject roughStone;
     public GameObject coal;
     public GameObject ironOre;
@@ -165,6 +170,10 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            console.text = console.text + "\nYou are too far away to mine that.";
+        }
     }
     
 
@@ -214,6 +223,45 @@ public class PlayerController : MonoBehaviour
         }
             return isBlocking;
         
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        console.text = console.text + "\nRock ON!!!." ;
+        string name = collision.gameObject.name;
+
+        if (name.Contains("Stone"))
+        {
+            
+            int stoneValue = 0;
+            int.TryParse(stoneAmt.text, out stoneValue);
+            stoneValue += 1;
+            stoneAmt.text = stoneValue.ToString();
+            Destroy(collision.gameObject);
+        }else if (name.Contains("Coal"))
+        {
+            int coalValue = 0;
+            int.TryParse(coalAmt.text, out coalValue);
+            coalValue += 1;
+            stoneAmt.text = coalValue.ToString();
+            Destroy(collision.gameObject);
+        }
+        else if (name.Contains("Iron"))
+        {
+            int ironValue = 0;
+            int.TryParse(ironAmt.text, out ironValue);
+            ironValue += 1;
+            stoneAmt.text = ironValue.ToString();
+            Destroy(collision.gameObject);
+        }
+        else if (name.Contains("Gold"))
+        {
+            int goldValue = 0;
+            int.TryParse(goldAmt.text, out goldValue);
+            goldValue += 1;
+            stoneAmt.text = goldValue.ToString();
+            Destroy(collision.gameObject);
+        }
     }
 
     void DoTurn(Vector3 direction)
