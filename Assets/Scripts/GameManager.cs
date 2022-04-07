@@ -39,8 +39,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 120;
-    private int height = 120;
+    private int width = 60;
+    private int height = 60;
     private int previous;
     private System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);

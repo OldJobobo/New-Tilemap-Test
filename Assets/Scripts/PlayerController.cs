@@ -243,7 +243,7 @@ public class PlayerController : MonoBehaviour
             int coalValue = 0;
             int.TryParse(coalAmt.text, out coalValue);
             coalValue += 1;
-            stoneAmt.text = coalValue.ToString();
+            coalAmt.text = coalValue.ToString();
             Destroy(collision.gameObject);
         }
         else if (name.Contains("Iron"))
@@ -251,7 +251,7 @@ public class PlayerController : MonoBehaviour
             int ironValue = 0;
             int.TryParse(ironAmt.text, out ironValue);
             ironValue += 1;
-            stoneAmt.text = ironValue.ToString();
+            ironAmt.text = ironValue.ToString();
             Destroy(collision.gameObject);
         }
         else if (name.Contains("Gold"))
@@ -259,7 +259,7 @@ public class PlayerController : MonoBehaviour
             int goldValue = 0;
             int.TryParse(goldAmt.text, out goldValue);
             goldValue += 1;
-            stoneAmt.text = goldValue.ToString();
+            goldAmt.text = goldValue.ToString();
             Destroy(collision.gameObject);
         }
     }
