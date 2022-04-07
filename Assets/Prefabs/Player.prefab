@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 925386391141519061}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2339742, y: -0.71581197, z: 0}
+  m_LocalPosition: {x: 1.226, y: -0.798, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &1714167234190853567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,10 +98,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundMap: {fileID: 0}
-  blockingTiles: []
-  dirtTile: {fileID: 0}
+  newTilemap: {fileID: 0}
+  blockingTiles: 
   console: {fileID: 0}
-  roughStone: {fileID: 0}
 --- !u!61 &7571737340598077833
 BoxCollider2D:
   m_ObjectHideFlags: 0

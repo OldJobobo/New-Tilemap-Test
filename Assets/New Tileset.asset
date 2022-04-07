@@ -1232,7 +1232,7 @@ MonoBehaviour:
       height: 0.031558186
     collData:
       vertices: []
-      type: 0
+      type: 1
     paramContainer:
       m_paramList:
       - name: health
@@ -1258,7 +1258,7 @@ MonoBehaviour:
       height: 0.031558186
     collData:
       vertices: []
-      type: 0
+      type: 1
     paramContainer:
       m_paramList:
       - name: health
@@ -1816,7 +1816,7 @@ MonoBehaviour:
       height: 0.031558186
     collData:
       vertices: []
-      type: 0
+      type: 1
     paramContainer:
       m_paramList:
       - name: health
@@ -1842,7 +1842,7 @@ MonoBehaviour:
       height: 0.031558186
     collData:
       vertices: []
-      type: 0
+      type: 1
     paramContainer:
       m_paramList:
       - name: health

@@ -488,11 +488,13 @@ public class GameManager : MonoBehaviour
     void SpawnPlayer(Vector2 spawnPos)
     {
 
-        Vector3 playerSpawnPoint = TilemapUtils.GetGridWorldPos(newTilemap, (int)spawnPos.x, (int)spawnPos.y);
+        Vector3 playerSpawnPoint = TilemapUtils.GetTileCenterPosition(newTilemap, (int)(spawnPos.x ), (int)(spawnPos.y));
 
 
-         playerSpawnPoint = new Vector3(playerSpawnPoint.x + .5f, playerSpawnPoint.y + .5f, 0);
+         playerSpawnPoint = new Vector3(playerSpawnPoint.x, playerSpawnPoint.y, 0);
         player.transform.position = playerSpawnPoint;
+        player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
+        print(playerSpawnPoint);
 
         Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
         player.SetActive(true);
@@ -506,11 +508,16 @@ public class GameManager : MonoBehaviour
             
             
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int gridPos = groundMap.WorldToCell(mousePos);
-            UnityEngine.Tilemaps.Tile clickedTile = groundMap.GetTile<UnityEngine.Tilemaps.Tile>(gridPos);
+            Vector2 gridPos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main));
 
+             uint clickedTile = newTilemap.GetTileData(gridPos);
+            ParameterContainer parameterContainer = TilemapUtils.GetParamsFromTileData(newTilemap, clickedTile);
+
+
+            int tileHealth = parameterContainer.GetIntParam("health");
+            
            
-            print(clickedTile.gameObject.GetComponent<CustomTile>().GetTileType()  + " : " + clickedTile.gameObject.GetComponent<CustomTile>().GetHealth() );
+            print( "You clicked  " + gridPos +  "\nTile Health = " + tileHealth );
             
         }
     }
