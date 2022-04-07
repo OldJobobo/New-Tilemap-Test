@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -23130248799399154}
   - component: {fileID: -4417466149284430457}
   m_Layer: 0
-  m_Name: IronTile
+  m_Name: Gold Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9c6d3f4dafe68e4091ea0b5bf674ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newTilemap: {fileID: 0}
 --- !u!212 &-23130248799399154
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -86,7 +85,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -7740762568372094626, guid: 8a78190f76b95ed4ca105e656d96d1fe, type: 3}
+  m_Sprite: {fileID: -6950349857543322872, guid: 8a78190f76b95ed4ca105e656d96d1fe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

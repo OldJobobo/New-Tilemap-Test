@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     
     public Text console;
     public GameObject roughStone;
+    public GameObject coal;
+    public GameObject ironOre;
+    public GameObject goldCoins;
 
     private bool isMoving;
     private Vector3 origPos, targetPos;
@@ -95,12 +98,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (Input.GetKeyDown(KeyCode.G) && Input.GetMouseButtonDown(0))
-        {
-            Vector2 pos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main)); 
-            DoMine(pos);
-            print("gClick");
-        }
+        
 
     }
 
@@ -136,11 +134,32 @@ public class PlayerController : MonoBehaviour
 
                     Vector2 offset = new Vector2(-0.5f, -0.5f);
 
-
-                    GameObject stoneObj = Instantiate(roughStone, dropPos + offset, Quaternion.identity);
-                    stoneObj.transform.SetParent(newTilemap.transform);
-                    console.text = console.text + "\nYou mined Stone.";
-
+                    if (tileObject.name == "Stone Tile")
+                    {
+                        GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
+                        stoneObj.transform.SetParent(newTilemap.transform);
+                        console.text = console.text + "\nYou mined Stone.";
+                    }else
+                    if (tileObject.name == "Coal Tile")
+                    {
+                        GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
+                        coalObj.transform.SetParent(newTilemap.transform);
+                        console.text = console.text + "\nYou mined Coal.";
+                    }
+                    else
+                    if (tileObject.name == "Iron Tile")
+                    {
+                        GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
+                        ironObj.transform.SetParent(newTilemap.transform);
+                        console.text = console.text + "\nYou mined Iron Ore.";
+                    }
+                    else
+                    if (tileObject.name == "Gold Tile")
+                    {
+                        GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
+                        goldObj.transform.SetParent(newTilemap.transform);
+                        console.text = console.text + "\nYou mined Gold.";
+                    }
                     newTilemap.SetTileData(targetCell, dirtTile);
                     newTilemap.UpdateMesh();
                 }

@@ -18,19 +18,19 @@ public class TileInfo : MonoBehaviour
         string name = this.gameObject.name;
         //print(name);
 
-        if (name == "StoneTile")
+        if (name == "Stone Tile")
         {
             SetHealth(4);
         } 
-        else if (name == "CoalTile")
+        else if (name == "Coal Tile")
         {
             SetHealth(6);
         }
-        else if (name == "IronTile")
+        else if (name == "Iron Tile")
         {
             SetHealth(8);
         }
-        else if (name == "GoldTile")
+        else if (name == "Gold Tile")
         {
             SetHealth(10);
         }

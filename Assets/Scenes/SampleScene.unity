@@ -139,9 +139,17 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: coal
+      value: 
+      objectReference: {fileID: 6051959563111506829, guid: 5d39b52e832ddc74d944c06f5f0fc1fb, type: 3}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: console
       value: 
       objectReference: {fileID: 820433757}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: ironOre
+      value: 
+      objectReference: {fileID: 6462531807846211717, guid: 90cd4381ded57134d9ab1de34a73a0f4, type: 3}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: dirtTile
       value: 
@@ -150,6 +158,10 @@ PrefabInstance:
       propertyPath: wallTile
       value: 
       objectReference: {fileID: 11400000, guid: 36204e6c6ea88c54595fa30db01fffe0, type: 2}
+    - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
+      propertyPath: goldCoins
+      value: 
+      objectReference: {fileID: 6078642306856725827, guid: d085d7464f27b764f99cfc36463cd323, type: 3}
     - target: {fileID: 1714167234190853567, guid: d586833471d0b9c4d9f83173bd0bea85, type: 3}
       propertyPath: groundMap
       value: 
