@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 200;
-    private int height = 200;
+    private int width = 120;
+    private int height = 120;
     private int previous;
     private System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
@@ -94,6 +94,10 @@ public class GameManager : MonoBehaviour
 
         AddGold(newSwapmap);
 
+        newTilemap.gameObject.SetActive(true);
+
+        newSwapmap.ClearMap();
+
         playerSpawn = FindPlayerSpawn(newTilemap);
 
         SpawnPlayer(playerSpawn);
@@ -101,8 +105,8 @@ public class GameManager : MonoBehaviour
 
     void GenerateMapSeed()
     {
-       
 
+        newTilemap.gameObject.SetActive(false);
 
         if (useRandomSeed)
         { seed = Time.time.ToString(); }
@@ -493,8 +497,8 @@ public class GameManager : MonoBehaviour
 
          playerSpawnPoint = new Vector3(playerSpawnPoint.x, playerSpawnPoint.y, 0);
         player.transform.position = playerSpawnPoint;
-        player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
-        print(playerSpawnPoint);
+       player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
+        //print(playerSpawnPoint);
 
         Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
         player.SetActive(true);
@@ -510,15 +514,17 @@ public class GameManager : MonoBehaviour
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 gridPos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main));
 
-             uint clickedTile = newTilemap.GetTileData(gridPos);
-            ParameterContainer parameterContainer = TilemapUtils.GetParamsFromTileData(newTilemap, clickedTile);
-
-
-            int tileHealth = parameterContainer.GetIntParam("health");
-            
+            uint clickedTile = newTilemap.GetTileData(gridPos);
            
-            print( "You clicked  " + gridPos +  "\nTile Health = " + tileHealth );
+            GameObject tileObject = newTilemap.GetTileObject((int)gridPos.x, (int)gridPos.y);
+            int h = tileObject.GetComponent<TileInfo>().GetHealth();
+
+            print( "You clicked  " + gridPos +  "\nTile Health = " + h);
+
+            Vector2 pos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main));
+            player.GetComponent<PlayerController>().DoMine(pos);
             
+          
         }
     }
 

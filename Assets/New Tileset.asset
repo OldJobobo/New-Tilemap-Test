@@ -1243,7 +1243,7 @@ MonoBehaviour:
         _stringValue: 
         _objectValue: {fileID: 0}
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1063285825036962614, guid: 9712124bb23aa4c47bfa6d2c0f3df0e5, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -1269,7 +1269,7 @@ MonoBehaviour:
         _stringValue: 
         _objectValue: {fileID: 0}
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1063285825036962614, guid: e257f80ebd957d74e86745f56ac2700b, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -1827,7 +1827,7 @@ MonoBehaviour:
         _stringValue: 
         _objectValue: {fileID: 0}
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1063285825036962614, guid: b36d98e283ab7304491f67a3769abc52, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -1853,7 +1853,7 @@ MonoBehaviour:
         _stringValue: 
         _objectValue: {fileID: 0}
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1063285825036962614, guid: ca3c638dbef65904bbf6ce4ebcfefbbe, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0

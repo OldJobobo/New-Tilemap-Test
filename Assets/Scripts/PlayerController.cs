@@ -38,8 +38,6 @@ public class PlayerController : MonoBehaviour
 
         playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
 
-        print("playerGridPos = " + playerGridPos);
-
         renderer = this.GetComponent<SpriteRenderer>();
 
         blockingTiles[0] = stoneTile;
@@ -97,8 +95,61 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+        if (Input.GetKeyDown(KeyCode.G) && Input.GetMouseButtonDown(0))
+        {
+            Vector2 pos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main)); 
+            DoMine(pos);
+            print("gClick");
+        }
 
     }
+
+    public void DoMine(Vector2 targetPos)
+    {
+        Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
+        Vector2 playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (playerPos));
+
+        print(playerGridPos);
+
+        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
+        uint targetTile = newTilemap.GetTileData(targetCell);
+
+
+        if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
+        {
+
+            GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
+            int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
+
+            if (tileHealth > 0)
+            {
+                tileHealth = tileHealth - 1;
+                tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
+                console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
+            }
+            else
+            {
+                Vector2 dropPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y));
+                //Vector2 dropPos = TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y);
+
+                Vector2 offset = new Vector2(-0.5f, -0.5f);
+
+
+                GameObject stoneObj = Instantiate(roughStone, dropPos + offset, Quaternion.identity);
+                stoneObj.transform.SetParent(newTilemap.transform);
+                console.text = console.text + "\nYou mined Stone.";
+
+                newTilemap.SetTileData(targetCell, dirtTile);
+                newTilemap.UpdateMesh();
+            }
+
+        }
+
+    
+
+}
+    
+
 
     private IEnumerator MovePlayer(Vector3 direction)
     {
@@ -125,46 +176,33 @@ public class PlayerController : MonoBehaviour
     bool CheckNeighbor(Vector3 direction)
     {
         bool isBlocking = false;
-        Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
-        
-        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (playerPos + direction));
-
-        uint testTile = newTilemap.GetTileData(targetCell);
-        
-        print(targetCell + " :: " + testTile);
-
-        foreach (uint tile in blockingTiles)
+        if (!isMoving)
         {
+            
+            Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
 
-            if (tile == newTilemap.GetTileData(targetCell))
-            { isBlocking = true; return isBlocking; }
-            else
-            { isBlocking = false; }
+            Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (playerPos + direction));
+
+            uint testTile = newTilemap.GetTileData(targetCell);
+
+            foreach (uint tile in blockingTiles)
+            {
+
+                if (tile == newTilemap.GetTileData(targetCell))
+                { isBlocking = true; return isBlocking; }
+                else
+                { isBlocking = false; }
+            }
         }
-        return isBlocking;
+            return isBlocking;
+        
     }
 
     void DoTurn(Vector3 direction)
     {
-        Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
-        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (playerPos + direction));
-
-        if (newTilemap.GetTileData(targetCell) == stoneTile)
-        {
-
-             newTilemap.SetTileData(targetCell, dirtTile);
-            newTilemap.UpdateMesh();
-            Vector2 offset = new Vector2(-0.5f, -0.5f);
-            Vector2 targetPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y)); 
-
-             GameObject stoneObj = Instantiate(roughStone, targetPos + offset, Quaternion.identity);
-             stoneObj.transform.SetParent(newTilemap.transform);
-             console.text = console.text + "\nYou mined Stone.";
-
-            
-
-        }
-
+      
+           
+        
     }
    
 }
