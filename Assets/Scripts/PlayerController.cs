@@ -109,45 +109,44 @@ public class PlayerController : MonoBehaviour
         Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
         Vector2 playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (playerPos));
 
-        print(playerGridPos);
-
         Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
         uint targetTile = newTilemap.GetTileData(targetCell);
 
+        Vector2 diff = (playerGridPos - targetCell);
+        print(diff);
 
-        if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
+        if ((diff.x == 1.0 || diff.x == -1.0 || diff.x == 0.0) && (diff.y == 1.0 || diff.y == -1.0 || diff.y == 0.0))
         {
-
-            GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
-            int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
-
-            if (tileHealth > 0)
+            if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
             {
-                tileHealth = tileHealth - 1;
-                tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
-                console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
+
+                GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
+                int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
+
+                if (tileHealth > 0)
+                {
+                    tileHealth = tileHealth - 1;
+                    tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
+                    console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
+                }
+                else
+                {
+                    Vector2 dropPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y));
+                    //Vector2 dropPos = TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y);
+
+                    Vector2 offset = new Vector2(-0.5f, -0.5f);
+
+
+                    GameObject stoneObj = Instantiate(roughStone, dropPos + offset, Quaternion.identity);
+                    stoneObj.transform.SetParent(newTilemap.transform);
+                    console.text = console.text + "\nYou mined Stone.";
+
+                    newTilemap.SetTileData(targetCell, dirtTile);
+                    newTilemap.UpdateMesh();
+                }
             }
-            else
-            {
-                Vector2 dropPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y));
-                //Vector2 dropPos = TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y);
-
-                Vector2 offset = new Vector2(-0.5f, -0.5f);
-
-
-                GameObject stoneObj = Instantiate(roughStone, dropPos + offset, Quaternion.identity);
-                stoneObj.transform.SetParent(newTilemap.transform);
-                console.text = console.text + "\nYou mined Stone.";
-
-                newTilemap.SetTileData(targetCell, dirtTile);
-                newTilemap.UpdateMesh();
-            }
-
         }
-
-    
-
-}
+    }
     
 
 

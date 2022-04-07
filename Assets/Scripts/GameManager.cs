@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
                 else
                     rNum = 0;
 
-                if (currentCell.x == 0 || currentCell.x == width - 1 || currentCell.y == 0 || currentCell.y == height - 1)
+                if (currentCell.x == 1 || currentCell.x == width - 2 || currentCell.y == 1 || currentCell.y == height - 2)
                 {
                     groundMap.SetTile(currentCell, tiles[3]);
                     newTilemap.SetTileData(x, y, stoneTile);
