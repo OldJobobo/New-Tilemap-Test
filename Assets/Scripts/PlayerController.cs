@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     
     public STETilemap newTilemap;
+    public GameObject chuckGrid;
    
     public uint[] blockingTiles;
     public Vector2 playerGridPos;
@@ -44,7 +45,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 
-        playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
+        //playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
 
         renderer = this.GetComponent<SpriteRenderer>();
 
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour
 
         float elapsedTime = 0;
 
-        origPos = newTilemap.transform.position;
+        origPos = chuckGrid.transform.position;
         targetPos = origPos + direction;
 
         while (elapsedTime < timeToMove)

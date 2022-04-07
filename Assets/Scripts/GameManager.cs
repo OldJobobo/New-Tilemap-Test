@@ -6,19 +6,14 @@ using CreativeSpore.SuperTilemapEditor;
 
 public class GameManager : MonoBehaviour
 {
-   
-    
-   
-
-   
-    
     public GameObject player;
     public string seed;
     public bool useRandomSeed;
     public STETilemap newTilemap;
     public STETilemap newSwapmap;
-
-
+    public STETilemap tmPrefab;
+    public STETilemap[,] chunks = new STETilemap[3, 3];
+    public GameObject chuckGrid;
 
     [Range(0, 100)]
     public int stonePercentage;
@@ -44,6 +39,7 @@ public class GameManager : MonoBehaviour
     private int previous;
     private System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
+   
 
     private uint dirtTile = 0;
     private uint stoneTile = 63;
@@ -58,9 +54,41 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        
+        for (int x = 0; x < 3; x++)
+        {
+            for (int y = 0; y < 3; y++)
+            {
+                tmPrefab = GenerateMapChunk(tmPrefab);
+                chunks[x, y] = Instantiate(newTilemap, new Vector2(0, 0), Quaternion.identity);
+                chunks[x, y].name = "chunk" + x.ToString() + y.ToString();
+                chunks[x, y].transform.parent = chuckGrid.transform;
+                    
+            }
+        }
+        chunks[0, 0].transform.position += new Vector3(-60, 60, 0);
+        chunks[0, 1].transform.position += new Vector3(-60, 0, 0);
+        chunks[0, 2].transform.position += new Vector3(-60, -60, 0);
+        chunks[1, 0].transform.position += new Vector3(0, 60, 0);
+        chunks[1, 1].transform.position += new Vector3(0, 0, 0);
+        chunks[1, 2].transform.position += new Vector3(0, -60, 0);
+        chunks[2, 0].transform.position += new Vector3(60, 60, 0);
+        chunks[2, 1].transform.position += new Vector3(60, 0, 0);
+        chunks[2, 2].transform.position += new Vector3(60, -60, 0);
+        //newTilemap = GenerateMapChunk();
+        playerSpawn = FindPlayerSpawn(chunks[1,1]);
+
+        SpawnPlayer(playerSpawn);
+    }
+
+    STETilemap GenerateMapChunk(STETilemap inMap)
+    {
+       
+
         GenerateMapSeed();
 
-        SwapTilemap(newSwapmap, newTilemap);
+        SwapTilemap(inMap, newTilemap);
 
         for (int i = 0; i < 5; i++)
         {
@@ -78,7 +106,7 @@ public class GameManager : MonoBehaviour
         }
 
         AddCoal(newSwapmap);
-              
+
         for (int i = 0; i < coalSmoothing; i++)
         {
             SmoothCoal();
@@ -97,9 +125,7 @@ public class GameManager : MonoBehaviour
 
         newSwapmap.ClearMap();
 
-        playerSpawn = FindPlayerSpawn(newTilemap);
-
-        SpawnPlayer(playerSpawn);
+        return newTilemap;
     }
 
     void GenerateMapSeed()
@@ -107,8 +133,8 @@ public class GameManager : MonoBehaviour
 
         newTilemap.gameObject.SetActive(false);
 
-        if (useRandomSeed)
-        { seed = Time.time.ToString(); }
+        
+         seed += Time.time.ToString() + Time.deltaTime.ToString(); 
 
         pseudoRandom = new System.Random(seed.GetHashCode());
 
