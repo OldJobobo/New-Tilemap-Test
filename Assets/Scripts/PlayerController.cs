@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private uint bedrock = 96;
 
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -140,6 +141,7 @@ public class PlayerController : MonoBehaviour
                 {
                     tileHealth = tileHealth - 1;
                     tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
+                    tileObject.GetComponent<TileInfo>().Flash();
                     console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
                 }
                 else
@@ -149,41 +151,41 @@ public class PlayerController : MonoBehaviour
 
                     Vector2 offset = new Vector2(-0.5f, -0.5f);
 
-                    if (tileObject.name == "Stone Tile")
+                    if (tileObject.name.Contains("Stone"))
                     {
                         audioSource.PlayOneShot(miningChip, 0.9F);
                         GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
                         stoneObj.transform.SetParent(newTilemap.transform);
-                        audioSource.PlayOneShot(miningChip, 0.7F);
+                        
                         console.text = console.text + "\nYou mined Stone.";
                     }else
-                    if (tileObject.name == "Coal Tile")
+                    if (tileObject.name.Contains("Coal"))
                     {
                         GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
                         coalObj.transform.SetParent(newTilemap.transform);
-                        audioSource.PlayOneShot(miningChip, 0.9F);
+                        
                         console.text = console.text + "\nYou mined Coal.";
                     }
                     else
-                    if (tileObject.name == "Iron Tile")
+                    if (tileObject.name.Contains("Iron"))
                     {
                         GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
                         ironObj.transform.SetParent(newTilemap.transform);
-                        audioSource.PlayOneShot(miningChip, 0.9F);
+                        
                         console.text = console.text + "\nYou mined Iron Ore.";
                     }
                     else
-                    if (tileObject.name == "Gold Tile")
+                    if (tileObject.name.Contains("Gold"))
                     {
                         GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
                         goldObj.transform.SetParent(newTilemap.transform);
-                        audioSource.PlayOneShot(miningChip, 0.9F);
+                        
                         console.text = console.text + "\nYou mined Gold.";
                     }
                     newTilemap.SetTileData(targetCell, dirtTile);
                     newTilemap.UpdateMesh();
                     
-                    audioSource.PlayOneShot(miningChip, 0.9F);
+                   
                 }
             }
         }

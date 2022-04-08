@@ -50,6 +50,18 @@ TextureImporter:
   - first:
       213: 3078681405316864465
     second: RogueTileset-001_15
+  - first:
+      213: 8689889290559313635
+    second: RogueTileset-001_16
+  - first:
+      213: 5119431334269651216
+    second: RogueTileset-001_17
+  - first:
+      213: 4816854179281170641
+    second: RogueTileset-001_18
+  - first:
+      213: -324297926315264752
+    second: RogueTileset-001_19
   externalObjects: {}
   serializedVersion: 11
   mipmaps:

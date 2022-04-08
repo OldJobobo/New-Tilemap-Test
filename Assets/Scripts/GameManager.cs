@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 240;
-    private int height = 240;
+    private int width = 180;
+    private int height = 180;
     private int previous;
     private System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
@@ -545,6 +545,9 @@ public class GameManager : MonoBehaviour
             }
           
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
 

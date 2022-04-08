@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7932570338196754622}
   - component: {fileID: -23130248799399154}
   - component: {fileID: -4417466149284430457}
+  - component: {fileID: -1539394399188598490}
   m_Layer: 0
   m_Name: Iron Tile
   m_TagString: Untagged
@@ -45,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9c6d3f4dafe68e4091ea0b5bf674ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flashEffect: {fileID: -1539394399188598490}
 --- !u!212 &-23130248799399154
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -109,3 +111,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChangeSpriteOnly: 0
+--- !u!114 &-1539394399188598490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063285825036962614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f5921050e66f08438fc3272e80db5da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashMaterial: {fileID: 2100000, guid: 07d506f55298f5c418638c67a2ba5f40, type: 2}
+  duration: 0.025

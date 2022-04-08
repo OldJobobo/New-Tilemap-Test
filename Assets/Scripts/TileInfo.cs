@@ -5,32 +5,35 @@ using CreativeSpore.SuperTilemapEditor;
 
 public class TileInfo : MonoBehaviour
 {
-    
-    
+
+    [SerializeField]
+    private SimpleFlash flashEffect;
+
     private int health = 0;
 
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
                
         string name = this.gameObject.name;
-        //print(name);
+        
 
-        if (name == "Stone Tile")
+
+        if (name.Contains("Stone"))
         {
             SetHealth(4);
         } 
-        else if (name == "Coal Tile")
+        else if (name.Contains("Coal"))
         {
             SetHealth(6);
         }
-        else if (name == "Iron Tile")
+        else if (name.Contains("Iron"))
         {
             SetHealth(8);
         }
-        else if (name == "Gold Tile")
+        else if (name.Contains("Gold"))
         {
             SetHealth(10);
         }
@@ -50,5 +53,10 @@ public class TileInfo : MonoBehaviour
     public int GetHealth()
     {
         return health;
+    }
+
+    public void Flash()
+    {
+        flashEffect.Flash();
     }
 }
