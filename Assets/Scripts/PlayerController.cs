@@ -27,6 +27,12 @@ public class PlayerController : MonoBehaviour
     public GameObject ironOre;
     public GameObject goldCoins;
 
+    public AudioSource audioSource;
+    public AudioClip footStep;
+    public AudioClip miningChip;
+    public AudioClip pickUp;
+
+
     private bool isMoving;
     private Vector3 origPos, targetPos;
     private float timeToMove = 0.2f;
@@ -39,13 +45,14 @@ public class PlayerController : MonoBehaviour
     private uint coalTile = 64;
     private uint ironTile = 94;
     private uint goldTile = 93;
+    private uint bedrock = 96;
 
 
     // Start is called before the first frame update
     void Start()
     {
 
-        //playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
+        playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
 
         renderer = this.GetComponent<SpriteRenderer>();
 
@@ -53,6 +60,7 @@ public class PlayerController : MonoBehaviour
         blockingTiles[1] = coalTile;
         blockingTiles[2] = ironTile; 
         blockingTiles[3] = goldTile;
+        blockingTiles[4] = bedrock;
       
     }
 
@@ -123,6 +131,7 @@ public class PlayerController : MonoBehaviour
         {
             if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
             {
+                audioSource.PlayOneShot(miningChip, 0.9F);
 
                 GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
                 int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
@@ -142,14 +151,17 @@ public class PlayerController : MonoBehaviour
 
                     if (tileObject.name == "Stone Tile")
                     {
+                        audioSource.PlayOneShot(miningChip, 0.9F);
                         GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
                         stoneObj.transform.SetParent(newTilemap.transform);
+                        audioSource.PlayOneShot(miningChip, 0.7F);
                         console.text = console.text + "\nYou mined Stone.";
                     }else
                     if (tileObject.name == "Coal Tile")
                     {
                         GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
                         coalObj.transform.SetParent(newTilemap.transform);
+                        audioSource.PlayOneShot(miningChip, 0.9F);
                         console.text = console.text + "\nYou mined Coal.";
                     }
                     else
@@ -157,6 +169,7 @@ public class PlayerController : MonoBehaviour
                     {
                         GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
                         ironObj.transform.SetParent(newTilemap.transform);
+                        audioSource.PlayOneShot(miningChip, 0.9F);
                         console.text = console.text + "\nYou mined Iron Ore.";
                     }
                     else
@@ -164,10 +177,13 @@ public class PlayerController : MonoBehaviour
                     {
                         GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
                         goldObj.transform.SetParent(newTilemap.transform);
+                        audioSource.PlayOneShot(miningChip, 0.9F);
                         console.text = console.text + "\nYou mined Gold.";
                     }
                     newTilemap.SetTileData(targetCell, dirtTile);
                     newTilemap.UpdateMesh();
+                    
+                    audioSource.PlayOneShot(miningChip, 0.9F);
                 }
             }
         }
@@ -185,15 +201,19 @@ public class PlayerController : MonoBehaviour
 
         float elapsedTime = 0;
 
-        origPos = chuckGrid.transform.position;
+        origPos = newTilemap.transform.position;
         targetPos = origPos + direction;
 
+        audioSource.PlayOneShot(footStep, 0.7F);
+        audioSource.PlayOneShot(footStep, 0.5F);
         while (elapsedTime < timeToMove)
         {
             newTilemap.transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / timeToMove));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
+        
 
         newTilemap.transform.position = targetPos;
 
@@ -215,9 +235,9 @@ public class PlayerController : MonoBehaviour
 
             foreach (uint tile in blockingTiles)
             {
-
+                //print("Testing: " + tile);
                 if (tile == newTilemap.GetTileData(targetCell))
-                { isBlocking = true; return isBlocking; }
+                { isBlocking = true;  return isBlocking; }
                 else
                 { isBlocking = false; }
             }
@@ -228,7 +248,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        console.text = console.text + "\nRock ON!!!." ;
+        //console.text = console.text + "\nRock On!!! You picked up." ;
         string name = collision.gameObject.name;
 
         if (name.Contains("Stone"))
@@ -239,13 +259,18 @@ public class PlayerController : MonoBehaviour
             stoneValue += 1;
             stoneAmt.text = stoneValue.ToString();
             Destroy(collision.gameObject);
-        }else if (name.Contains("Coal"))
+            audioSource.PlayOneShot(pickUp, 0.7F);
+            console.text = console.text + "\nRock On!!! You picked up Rough Stone.";
+        }
+        else if (name.Contains("Coal"))
         {
             int coalValue = 0;
             int.TryParse(coalAmt.text, out coalValue);
             coalValue += 1;
             coalAmt.text = coalValue.ToString();
             Destroy(collision.gameObject);
+            audioSource.PlayOneShot(pickUp, 0.7F);
+            console.text = console.text + "\nRock On!!! You picked up Coal.";
         }
         else if (name.Contains("Iron"))
         {
@@ -254,6 +279,8 @@ public class PlayerController : MonoBehaviour
             ironValue += 1;
             ironAmt.text = ironValue.ToString();
             Destroy(collision.gameObject);
+            audioSource.PlayOneShot(pickUp, 0.7F);
+            console.text = console.text + "\nRock On!!! You picked up Iron Ore.";
         }
         else if (name.Contains("Gold"))
         {
@@ -262,6 +289,8 @@ public class PlayerController : MonoBehaviour
             goldValue += 1;
             goldAmt.text = goldValue.ToString();
             Destroy(collision.gameObject);
+            audioSource.PlayOneShot(pickUp, 0.7F);
+            console.text = console.text + "\nRock On!!! You picked up Gold.";
         }
     }
 

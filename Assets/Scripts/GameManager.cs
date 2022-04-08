@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using CreativeSpore.SuperTilemapEditor;
 
 public class GameManager : MonoBehaviour
@@ -10,9 +9,8 @@ public class GameManager : MonoBehaviour
     public string seed;
     public bool useRandomSeed;
     public STETilemap newTilemap;
-    public STETilemap newSwapmap;
+    public STETilemap swapMap;
     public STETilemap tmPrefab;
-    public STETilemap[,] chunks = new STETilemap[3, 3];
     public GameObject chuckGrid;
 
     [Range(0, 100)]
@@ -34,8 +32,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 60;
-    private int height = 60;
+    private int width = 240;
+    private int height = 240;
     private int previous;
     private System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
@@ -48,90 +46,74 @@ public class GameManager : MonoBehaviour
     private uint coalTile = 64;
     private uint ironTile = 94;
     private uint goldTile = 93;
+    private uint bedrock = 96;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-
-        
-        for (int x = 0; x < 3; x++)
-        {
-            for (int y = 0; y < 3; y++)
-            {
-                tmPrefab = GenerateMapChunk(tmPrefab);
-                chunks[x, y] = Instantiate(newTilemap, new Vector2(0, 0), Quaternion.identity);
-                chunks[x, y].name = "chunk" + x.ToString() + y.ToString();
-                chunks[x, y].transform.parent = chuckGrid.transform;
-                    
-            }
-        }
-        chunks[0, 0].transform.position += new Vector3(-60, 60, 0);
-        chunks[0, 1].transform.position += new Vector3(-60, 0, 0);
-        chunks[0, 2].transform.position += new Vector3(-60, -60, 0);
-        chunks[1, 0].transform.position += new Vector3(0, 60, 0);
-        chunks[1, 1].transform.position += new Vector3(0, 0, 0);
-        chunks[1, 2].transform.position += new Vector3(0, -60, 0);
-        chunks[2, 0].transform.position += new Vector3(60, 60, 0);
-        chunks[2, 1].transform.position += new Vector3(60, 0, 0);
-        chunks[2, 2].transform.position += new Vector3(60, -60, 0);
-        //newTilemap = GenerateMapChunk();
-        playerSpawn = FindPlayerSpawn(chunks[1,1]);
-
-        SpawnPlayer(playerSpawn);
+        StartNewGame();
     }
+
+    void StartNewGame()
+    {
+        newTilemap = GenerateMapChunk(newTilemap);
+
+        playerSpawn = FindPlayerSpawn(newTilemap);
+
+        SpawnPlayer(newTilemap, playerSpawn);
+
+        newTilemap.gameObject.SetActive(true);
+    }
+
 
     STETilemap GenerateMapChunk(STETilemap inMap)
     {
-       
+        STETilemap chunk = GenerateMapSeed(inMap);
 
-        GenerateMapSeed();
-
-        SwapTilemap(inMap, newTilemap);
+        SwapTilemap(swapMap, chunk);
 
         for (int i = 0; i < 5; i++)
         {
-            SmoothWalls();
+            SmoothWalls(chunk);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            SmoothWater();
+            SmoothWater(chunk);
         }
 
         for (int i = 0; i < 3; i++)
         {
-            SmoothGrass();
+            SmoothGrass(chunk);
         }
 
-        AddCoal(newSwapmap);
+        AddCoal(chunk);
 
         for (int i = 0; i < coalSmoothing; i++)
         {
-            SmoothCoal();
+            SmoothCoal(chunk);
         }
 
-        AddIron(newSwapmap);
+        AddIron(chunk);
 
         for (int i = 0; i < ironSmoothing; i++)
         {
-            SmoothIron();
+            SmoothIron(chunk);
         }
 
-        AddGold(newSwapmap);
+        AddGold(chunk);
 
-        newTilemap.gameObject.SetActive(true);
+        swapMap.ClearMap();
 
-        newSwapmap.ClearMap();
-
-        return newTilemap;
+        return chunk;
     }
 
-    void GenerateMapSeed()
+    STETilemap GenerateMapSeed(STETilemap inMap)
     {
-
-        newTilemap.gameObject.SetActive(false);
+        
+        inMap.gameObject.SetActive(false);
 
         
          seed += Time.time.ToString() + Time.deltaTime.ToString(); 
@@ -148,7 +130,7 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-               
+                int bedrockAmt = 20;
                 int rNum = 0;
 
                 int rNumStone = pseudoRandom.Next(0, 100);
@@ -157,175 +139,189 @@ public class GameManager : MonoBehaviour
                 else
                     rNum = 0;
 
-                if (currentCell.x <= 1 || currentCell.x >= width - 2 || currentCell.y <= 1 || currentCell.y >= height - 3)
+                if (currentCell.x <= (bedrockAmt + 2) || currentCell.x >= width - (bedrockAmt + 3)
+                    || currentCell.y <= (bedrockAmt + 1) || currentCell.y >= height - (bedrockAmt + 4))
                 {
-                    
-                    newTilemap.SetTileData(x, y, stoneTile);
+                    inMap.SetTileData(x, y, bedrock);
                 }
-                else if(rNum == 3)
+                else
+                if (currentCell.x <= (bedrockAmt + 7) || currentCell.x >= width - (bedrockAmt + 8)
+                    || currentCell.y <= (bedrockAmt + 6) || currentCell.y >= height - (bedrockAmt + 9))
                 {
-                    newTilemap.SetTileData(x, y, stoneTile);
+                    inMap.SetTileData(x, y, stoneTile);
+                }
+                else if (rNum == 3)
+                {
+                    inMap.SetTileData(x, y, stoneTile);
 
-                } else
-                {
-                   
-                    newTilemap.SetTileData(x, y, dirtTile);
                 }
+                else
+                {
+
+                    inMap.SetTileData(x, y, dirtTile);
+
+                }
+            
+            
 
                 currentCell.x = x;
                 currentCell.y = y;
-
+               
             }
 
-        }
+        } return inMap;
     }
 
-    void SmoothWalls()
+    void SmoothWalls(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile , newTilemap);
+                int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, inMap);
                 int rNumWater = pseudoRandom.Next(0, 100);
 
-                if (neighborWallTiles > 4)
+                if (inMap.GetTileData(x, y) != bedrock)
                 {
-                   
-                    newSwapmap.SetTileData(x, y, 63);
-                }
-                else if (neighborWallTiles < 4)
-                {
-                    if (rNumWater < waterPercentage)
+                    if (neighborWallTiles > 4)
                     {
-                        
-                        newSwapmap.SetTileData(x, y, waterTile);
-                    }
-                    else
-                    {
-                        
-                        newSwapmap.SetTileData(x, y, grassTile);
-                    }
-                    }
-                    
 
+                        swapMap.SetTileData(x, y, 63);
+                    }
+                    else if (neighborWallTiles < 4)
+                    {
+                        if (rNumWater < waterPercentage)
+                        {
+
+                            swapMap.SetTileData(x, y, waterTile);
+                        }
+                        else
+                        {
+
+                            swapMap.SetTileData(x, y, grassTile);
+                        }
+                    }
+
+
+                }
             }
+
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void SmoothWater()
+    void SmoothWater(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (newSwapmap.GetTileData(x, y) != stoneTile)
+                if (inMap.GetTileData(x, y) != stoneTile && inMap.GetTileData(x, y) != bedrock)
                 {
-                    int neighborWaterTiles = GetSurroundingTileCount(x, y, waterTile, newTilemap);
+                    int neighborWaterTiles = GetSurroundingTileCount(x, y, waterTile, inMap);
                     int rNumGrass = pseudoRandom.Next(0, 100);
 
                     if (neighborWaterTiles > 4)
                     {
                         
-                        newSwapmap.SetTileData(x, y, waterTile);
+                        swapMap.SetTileData(x, y, waterTile);
                     }
                     else if (neighborWaterTiles < 4)
                     {
                         if (rNumGrass < grassPercentage)
                         {
-                            
-                            newSwapmap.SetTileData(x, y, grassTile);
+
+                            swapMap.SetTileData(x, y, grassTile);
                         }
                         else
                         {
-                           
-                            newSwapmap.SetTileData(x, y, dirtTile);
+
+                            swapMap.SetTileData(x, y, dirtTile);
                         }
                     }
                 }
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void SmoothGrass()
+    void SmoothGrass(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (newSwapmap.GetTileData(x, y) != stoneTile && newSwapmap.GetTileData(x, y) != waterTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) != stoneTile && inMap.GetTileData(x, y) != waterTile)
                 {
                     int neighborGrassTiles = GetSurroundingTileCount(x, y, grassTile, newTilemap);
 
                     if (neighborGrassTiles > 4)
                     {
-                        newSwapmap.SetTileData(x, y, grassTile);
+                        swapMap.SetTileData(x, y, grassTile);
                     }
 
                     else if (neighborGrassTiles < 4)
                     {
-                        newSwapmap.SetTileData(x, y, dirtTile);
+                        swapMap.SetTileData(x, y, dirtTile);
                     }
                 }
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void SmoothCoal()
+    void SmoothCoal(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (newSwapmap.GetTileData(x, y) == stoneTile || newSwapmap.GetTileData(x, y) == coalTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile || inMap.GetTileData(x, y) == coalTile)
                 {
                    
                         int neighborCoalTiles = GetSurroundingTileCount(x, y, coalTile, newTilemap);
                         int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
 
                     if (neighborCoalTiles > 3 && neighborCoalTiles < 5 && neighborWallTiles > 5)
-                        newSwapmap.SetTileData(x, y, coalTile);
+                        swapMap.SetTileData(x, y, coalTile);
                         else if (neighborCoalTiles < 3 || neighborCoalTiles >= 5)
                         {
-                            newSwapmap.SetTileData(x, y, stoneTile);
+                            swapMap.SetTileData(x, y, stoneTile);
                         }
                    
                 }
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void SmoothIron()
+    void SmoothIron(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (newSwapmap.GetTileData(x, y) == stoneTile || newSwapmap.GetTileData(x, y) == ironTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile || inMap.GetTileData(x, y) == ironTile)
                 {
 
                     int neighborIronTiles = GetSurroundingTileCount(x, y, ironTile, newTilemap);
                     int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
 
                     if (neighborIronTiles > 3 && neighborIronTiles < 5 && neighborWallTiles > 5)
-                        newSwapmap.SetTileData(x, y, ironTile);
+                        swapMap.SetTileData(x, y, ironTile);
                     else if (neighborIronTiles < 3 || neighborIronTiles >= 5)
                     {
-                        newSwapmap.SetTileData(x, y, stoneTile);
+                        swapMap.SetTileData(x, y, stoneTile);
                     }
 
                 }
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
 
@@ -340,7 +336,7 @@ public class GameManager : MonoBehaviour
                 {
                     if (neighborX != gridX || neighborY != gridY)
                     {
-                        //if (map.GetTile(new Vector3Int(neighborX, neighborY, 0)) == tileType)
+                        
                         if(map.GetTileData(neighborX, neighborY) == tileType)
                         {
                             count++;
@@ -357,18 +353,18 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
-    void SwapTilemap(STETilemap origMap, STETilemap swapMap)
+    void SwapTilemap(STETilemap outMap, STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                origMap.SetTileData(x, y, swapMap.GetTileData(x, y));
+                outMap.SetTileData(x, y, inMap.GetTileData(x, y));
             }
         }
     }
 
-    void AddCoal(STETilemap tilemap)
+    void AddCoal(STETilemap inMap)
     {
         
 
@@ -377,22 +373,22 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-               if (tilemap.GetTileData(x, y) == stoneTile )
+               if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile )
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, tilemap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, inMap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < coalPercentage)
                             {
-                                tilemap.SetTileData(x, y, coalTile);
+                                swapMap.SetTileData(x, y, coalTile);
                             }
                             else
                             {
-                                tilemap.SetTileData(x, y, stoneTile);
+                                swapMap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -400,10 +396,10 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void AddIron(STETilemap tilemap)
+    void AddIron(STETilemap inMap)
     {
 
 
@@ -412,23 +408,23 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-                if (tilemap.GetTileData(x, y) == stoneTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile)
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, tilemap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, inMap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < ironPercentage)
                             {
-                                tilemap.SetTileData(x, y, ironTile);
+                                swapMap.SetTileData(x, y, ironTile);
 
                             }
                             else
                             {
-                                tilemap.SetTileData(x, y, stoneTile);
+                                swapMap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -436,10 +432,10 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    void AddGold(STETilemap tilemap)
+    void AddGold(STETilemap inMap)
     {
 
 
@@ -448,23 +444,23 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-                if (tilemap.GetTileData(x, y) == stoneTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile)
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
-                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, tilemap);
+                        int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, inMap);
                         if (neighborWallTiles > 5)
                         {
                             int rNumCoal = pseudoRandom.Next(0, 100);
 
                             if (rNumCoal < goldPercentage)
                             {
-                                tilemap.SetTileData(x, y, goldTile);
+                                swapMap.SetTileData(x, y, goldTile);
 
                             }
                             else
                             {
-                                tilemap.SetTileData(x, y, stoneTile);
+                                swapMap.SetTileData(x, y, stoneTile);
                             }
                         }
                     }
@@ -472,10 +468,10 @@ public class GameManager : MonoBehaviour
 
             }
         }
-        SwapTilemap(newTilemap, newSwapmap);
+        SwapTilemap(inMap, swapMap);
     }
 
-    Vector2 FindPlayerSpawn(STETilemap tilemap)
+    Vector2 FindPlayerSpawn(STETilemap inMap)
     {
         bool isBlocking = true;
         
@@ -483,14 +479,13 @@ public class GameManager : MonoBehaviour
 
         while (isBlocking)
         {
-            int randomX = Random.Range(2, 99);
-            int randomY = Random.Range(2, 99);
+            int randomX = Random.Range(2, width);
+            int randomY = Random.Range(2, height);
 
             Vector2 testPos = new Vector2(randomX, randomY);
 
-            //if (tilemap.GetTile(testPos) == tiles[3] || tilemap.GetTile(testPos) == tiles[4] || tilemap.GetTile(testPos) == tiles[5] || tilemap.GetTile(testPos) == tiles[6])
-            if (tilemap.GetTileData(testPos) == stoneTile || tilemap.GetTileData(testPos) == coalTile 
-                || tilemap.GetTileData(testPos) == ironTile || tilemap.GetTileData(testPos) == goldTile)
+            if (inMap.GetTileData(testPos) == bedrock || inMap.GetTileData(testPos) == stoneTile || inMap.GetTileData(testPos) == coalTile 
+                || inMap.GetTileData(testPos) == ironTile || inMap.GetTileData(testPos) == goldTile)
             {
                 isBlocking = true;
                
@@ -508,7 +503,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    void SpawnPlayer(Vector2 spawnPos)
+    void SpawnPlayer(STETilemap spawnMap, Vector2 spawnPos)
     {
 
         Vector3 playerSpawnPoint = TilemapUtils.GetTileCenterPosition(newTilemap, (int)(spawnPos.x ), (int)(spawnPos.y));
