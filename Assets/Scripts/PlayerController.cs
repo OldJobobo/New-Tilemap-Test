@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+
 using UnityEngine.UI;
 using CreativeSpore.SuperTilemapEditor;
 
@@ -28,20 +28,24 @@ public class PlayerController : MonoBehaviour
     public GameObject goldCoins;
 
     public AudioSource audioSource;
-    public AudioClip footStep;
+    public AudioClip footstep;
+    public AudioClip footstepGrass;
+    public AudioClip footstepWater;
     public AudioClip miningChip;
     public AudioClip pickUp;
 
 
     private bool isMoving;
+    private bool miningMode;
+
     private Vector3 origPos, targetPos;
     private float timeToMove = 0.2f;
     new SpriteRenderer renderer;
 
     private uint dirtTile = 0;
     private uint stoneTile = 63;
-    //private uint waterTile = 2;
-    //private uint grassTile = 31;
+    private uint waterTile = 2;
+    private uint grassTile = 31;
     private uint coalTile = 64;
     private uint ironTile = 94;
     private uint goldTile = 93;
@@ -75,7 +79,7 @@ public class PlayerController : MonoBehaviour
             if (!CheckNeighbor(Vector3.left))
             {
                 renderer.flipX = false;
-                StartCoroutine(MovePlayer(Vector3.right));
+                StartCoroutine(MovePlayer(Vector3.right, GetNeighbor(Vector3.left)));
             } else
             {
                 DoTurn(Vector3.left);
@@ -86,7 +90,7 @@ public class PlayerController : MonoBehaviour
             if (!CheckNeighbor(Vector3.right))
             {
                 renderer.flipX = true;
-                StartCoroutine(MovePlayer(Vector3.left));
+                StartCoroutine(MovePlayer(Vector3.left, GetNeighbor(Vector3.right)));
             }
             else
             {
@@ -96,7 +100,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.up))
-            { StartCoroutine(MovePlayer(Vector3.down)); }
+            { StartCoroutine(MovePlayer(Vector3.down, GetNeighbor(Vector3.up))); }
             else
             {
                 DoTurn(Vector3.up);
@@ -106,108 +110,131 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.S) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.down))
-            { StartCoroutine(MovePlayer(Vector3.up)); }
+            { StartCoroutine(MovePlayer(Vector3.up, GetNeighbor(Vector3.down))); }
             else
             {
                 DoTurn(Vector3.down);
             }
         }
         
-        
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            miningMode = true;
+            //console.text += "\nMining Mode Activated.";
+        }
 
     }
 
     public void DoMine(Vector2 targetPos)
     {
-        Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
-        Vector2 playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (playerPos));
 
-        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
-        uint targetTile = newTilemap.GetTileData(targetCell);
-
-        Vector2 diff = (playerGridPos - targetCell);
-        print(diff);
-
-        if ((diff.x == 1.0 || diff.x == -1.0 || diff.x == 0.0) && (diff.y == 1.0 || diff.y == -1.0 || diff.y == 0.0))
+        if (miningMode)
         {
-            if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
+            Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
+            Vector2 playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (playerPos));
+
+            Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
+            uint targetTile = newTilemap.GetTileData(targetCell);
+
+            Vector2 diff = (playerGridPos - targetCell);
+          
+
+            if ((diff.x == 1.0 || diff.x == -1.0 || diff.x == 0.0) && (diff.y == 1.0 || diff.y == -1.0 || diff.y == 0.0))
             {
-                audioSource.PlayOneShot(miningChip, 0.9F);
-
-                GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
-                int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
-
-                if (tileHealth > 0)
+                if (targetTile == stoneTile || targetTile == coalTile || targetTile == ironTile || targetTile == goldTile)
                 {
-                    tileHealth = tileHealth - 1;
-                    tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
-                    tileObject.GetComponent<TileInfo>().Flash();
-                    console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
-                }
-                else
-                {
-                    Vector2 dropPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y));
-                    //Vector2 dropPos = TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y);
+                    audioSource.PlayOneShot(miningChip, 0.9F);
 
-                    Vector2 offset = new Vector2(-0.5f, -0.5f);
+                    GameObject tileObject = newTilemap.GetTileObject((int)targetCell.x, (int)targetCell.y);
+                    int tileHealth = tileObject.GetComponent<TileInfo>().GetHealth();
 
-                    if (tileObject.name.Contains("Stone"))
+                    if (tileHealth > 1)
                     {
-                        audioSource.PlayOneShot(miningChip, 0.9F);
-                        GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
-                        stoneObj.transform.SetParent(newTilemap.transform);
-                        
-                        console.text = console.text + "\nYou mined Stone.";
-                    }else
-                    if (tileObject.name.Contains("Coal"))
-                    {
-                        GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
-                        coalObj.transform.SetParent(newTilemap.transform);
-                        
-                        console.text = console.text + "\nYou mined Coal.";
+                        tileHealth = tileHealth - 1;
+                        tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
+                        tileObject.GetComponent<TileInfo>().Flash();
+                        miningMode = false;
+                        console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
                     }
-                    else
-                    if (tileObject.name.Contains("Iron"))
+                    else if (tileHealth <= 1)
                     {
-                        GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
-                        ironObj.transform.SetParent(newTilemap.transform);
-                        
-                        console.text = console.text + "\nYou mined Iron Ore.";
+                        Vector2 dropPos = newTilemap.transform.TransformPoint(TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y));
+                        //Vector2 dropPos = TilemapUtils.GetTileCenterPosition(newTilemap, (int)targetCell.x, (int)targetCell.y);
+
+                        Vector2 offset = new Vector2(-0.5f, -0.5f);
+
+                        if (tileObject.name.Contains("Stone"))
+                        {
+                            audioSource.PlayOneShot(miningChip, 0.9F);
+                            GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
+                            stoneObj.transform.SetParent(newTilemap.transform);
+                            miningMode = false;
+                            console.text = console.text + "\nYou mined Stone.";
+                        }
+                        else
+                        if (tileObject.name.Contains("Coal"))
+                        {
+                            GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
+                            coalObj.transform.SetParent(newTilemap.transform);
+                            miningMode = false;
+                            console.text = console.text + "\nYou mined Coal.";
+                        }
+                        else
+                        if (tileObject.name.Contains("Iron"))
+                        {
+                            GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
+                            ironObj.transform.SetParent(newTilemap.transform);
+                            miningMode = false;
+                            console.text = console.text + "\nYou mined Iron Ore.";
+                        }
+                        else
+                        if (tileObject.name.Contains("Gold"))
+                        {
+                            GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
+                            goldObj.transform.SetParent(newTilemap.transform);
+                            miningMode = false;
+                            console.text = console.text + "\nYou mined Gold.";
+                        }
+                        newTilemap.SetTileData(targetCell, dirtTile);
+                        newTilemap.UpdateMesh();
+
+
                     }
-                    else
-                    if (tileObject.name.Contains("Gold"))
-                    {
-                        GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
-                        goldObj.transform.SetParent(newTilemap.transform);
-                        
-                        console.text = console.text + "\nYou mined Gold.";
-                    }
-                    newTilemap.SetTileData(targetCell, dirtTile);
-                    newTilemap.UpdateMesh();
-                    
-                   
                 }
             }
-        }
-        else
-        {
-            console.text = console.text + "\nYou are too far away to mine that.";
+            else
+            {
+                console.text = console.text + "\nYou are too far away to mine that.";
+            }
         }
     }
     
 
 
-    private IEnumerator MovePlayer(Vector3 direction)
+    private IEnumerator MovePlayer(Vector3 direction, uint groundType)
     {
+
         isMoving = true;
-
         float elapsedTime = 0;
-
         origPos = newTilemap.transform.position;
         targetPos = origPos + direction;
+        if (groundType == dirtTile)
+        {
+            audioSource.PlayOneShot(footstep, 0.6F);
+            
+        }
+        else if (groundType == grassTile)
+        {
+            audioSource.PlayOneShot(footstepGrass, 0.6F);
+            
+        }
+        else if (groundType == waterTile)
+        {
+            console.text += "\nYou got wet!";
+            audioSource.PlayOneShot(footstepWater, 0.6F);
+            
+        }
 
-        audioSource.PlayOneShot(footStep, 0.7F);
-        audioSource.PlayOneShot(footStep, 0.5F);
         while (elapsedTime < timeToMove)
         {
             newTilemap.transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / timeToMove));
@@ -215,12 +242,9 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        
-
         newTilemap.transform.position = targetPos;
 
         isMoving = false;
-
     }
 
     bool CheckNeighbor(Vector3 direction)
@@ -248,9 +272,23 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    uint GetNeighbor(Vector3 direction)
+    {
+        
+        
+        Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
+
+        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (playerPos + direction));
+
+        uint testTile = newTilemap.GetTileData(targetCell);
+                       
+        return testTile;
+
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //console.text = console.text + "\nRock On!!! You picked up." ;
+       
         string name = collision.gameObject.name;
 
         if (name.Contains("Stone"))
@@ -263,6 +301,7 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             audioSource.PlayOneShot(pickUp, 0.7F);
             console.text = console.text + "\nRock On!!! You picked up Rough Stone.";
+
         }
         else if (name.Contains("Coal"))
         {

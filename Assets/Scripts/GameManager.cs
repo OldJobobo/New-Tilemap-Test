@@ -107,7 +107,10 @@ public class GameManager : MonoBehaviour
         }
 
         AddGold(chunk);
-
+        for (int i = 0; i < goldSmoothing; i++)
+        {
+            SmoothGold(chunk);
+        }
         swapMap.ClearMap();
 
         return chunk;
@@ -119,7 +122,7 @@ public class GameManager : MonoBehaviour
         inMap.gameObject.SetActive(false);
 
         
-         seed += Time.time.ToString() + Time.deltaTime.ToString(); 
+        //seed += Time.time.ToString() + Time.deltaTime.ToString(); 
 
         pseudoRandom = new System.Random(seed.GetHashCode());
 
@@ -156,20 +159,14 @@ public class GameManager : MonoBehaviour
                 else if (rNum == 3)
                 {
                     inMap.SetTileData(x, y, stoneTile);
-
                 }
                 else
                 {
-
                     inMap.SetTileData(x, y, dirtTile);
-
                 }
-            
-            
 
                 currentCell.x = x;
                 currentCell.y = y;
-               
             }
 
         } return inMap;
@@ -204,11 +201,8 @@ public class GameManager : MonoBehaviour
                             swapMap.SetTileData(x, y, grassTile);
                         }
                     }
-
-
                 }
             }
-
         }
         SwapTilemap(inMap, swapMap);
     }
@@ -243,7 +237,6 @@ public class GameManager : MonoBehaviour
                         }
                     }
                 }
-
             }
         }
         SwapTilemap(inMap, swapMap);
@@ -293,9 +286,7 @@ public class GameManager : MonoBehaviour
                         {
                             swapMap.SetTileData(x, y, stoneTile);
                         }
-                   
                 }
-
             }
         }
         SwapTilemap(inMap, swapMap);
@@ -319,14 +310,34 @@ public class GameManager : MonoBehaviour
                     {
                         swapMap.SetTileData(x, y, stoneTile);
                     }
-
                 }
-
             }
         }
         SwapTilemap(inMap, swapMap);
     }
+    void SmoothGold(STETilemap inMap)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile || inMap.GetTileData(x, y) == ironTile)
+                {
 
+                    int neighborIronTiles = GetSurroundingTileCount(x, y, goldTile, newTilemap);
+                    int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
+
+                    if (neighborIronTiles > 3 && neighborIronTiles < 5 && neighborWallTiles > 5)
+                        swapMap.SetTileData(x, y, goldTile);
+                    else if (neighborIronTiles < 3 || neighborIronTiles >= 5)
+                    {
+                        swapMap.SetTileData(x, y, stoneTile);
+                    }
+                }
+            }
+        }
+        SwapTilemap(inMap, swapMap);
+    }
 
     int GetSurroundingTileCount(int gridX, int gridY, uint tileType, STETilemap map)
     {
@@ -350,7 +361,6 @@ public class GameManager : MonoBehaviour
                 {
                     count++;
                 }
-
             }
         }
         return count;
@@ -376,7 +386,7 @@ public class GameManager : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
 
-               if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile )
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile )
                 {
                     if (x > 1 && x < width - 2 && y > 1 && y < height - 2)
                     {
@@ -396,7 +406,6 @@ public class GameManager : MonoBehaviour
                         }
                     }
                 }
-
             }
         }
         SwapTilemap(inMap, swapMap);
@@ -491,32 +500,23 @@ public class GameManager : MonoBehaviour
                 || inMap.GetTileData(testPos) == ironTile || inMap.GetTileData(testPos) == goldTile)
             {
                 isBlocking = true;
-               
             } else
             {
                 isBlocking = false;
-                
                 spawnPos = testPos;
-                
             }
-            
-           
         }
         return spawnPos;
-
     }
 
     void SpawnPlayer(STETilemap spawnMap, Vector2 spawnPos)
     {
-
         Vector3 playerSpawnPoint = TilemapUtils.GetTileCenterPosition(newTilemap, (int)(spawnPos.x ), (int)(spawnPos.y));
 
-
-         playerSpawnPoint = new Vector3(playerSpawnPoint.x, playerSpawnPoint.y, 0);
+        playerSpawnPoint = new Vector3(playerSpawnPoint.x, playerSpawnPoint.y, 0);
         player.transform.position = playerSpawnPoint;
-       player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
-        //print(playerSpawnPoint);
-
+        player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
+       
         Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
         player.SetActive(true);
     }
@@ -526,8 +526,6 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            
-            
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 gridPos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main));
 
@@ -537,9 +535,7 @@ public class GameManager : MonoBehaviour
             {
                 GameObject tileObject = newTilemap.GetTileObject((int)gridPos.x, (int)gridPos.y);
                 int h = tileObject.GetComponent<TileInfo>().GetHealth();
-
-                print("You clicked  " + gridPos + "\nTile Health = " + h);
-
+               
                 Vector2 pos = new Vector2(TilemapUtils.GetMouseGridX(newTilemap, Camera.main), TilemapUtils.GetMouseGridY(newTilemap, Camera.main));
                 player.GetComponent<PlayerController>().DoMine(pos);
             }
