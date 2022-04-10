@@ -16,10 +16,16 @@ public class GameManager : MonoBehaviour
 
     [Range(0, 100)]
     public int stonePercentage;
+    [Range(0, 10)]
+    public int stoneSmoothing;
     [Range(0, 100)]
     public int waterPercentage;
+    [Range(0, 10)]
+    public int waterSmoothing;
     [Range(0, 100)]
     public int grassPercentage;
+    [Range(0, 10)]
+    public int grassSmoothing;
     [Range(0, 100)]
     public int coalPercentage;
     [Range(0, 10)]
@@ -77,17 +83,17 @@ public class GameManager : MonoBehaviour
 
         SwapTilemap(swapMap, chunk);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < stoneSmoothing; i++)
         {
-            SmoothWalls(chunk);
+            SmoothStone(chunk);
         }
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < waterSmoothing; i++)
         {
             SmoothWater(chunk);
         }
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < grassSmoothing; i++)
         {
             SmoothGrass(chunk);
         }
@@ -107,6 +113,7 @@ public class GameManager : MonoBehaviour
         }
 
         AddGold(chunk);
+
         for (int i = 0; i < goldSmoothing; i++)
         {
             SmoothGold(chunk);
@@ -172,7 +179,7 @@ public class GameManager : MonoBehaviour
         } return inMap;
     }
 
-    void SmoothWalls(STETilemap inMap)
+    void SmoothStone(STETilemap inMap)
     {
         for (int x = 0; x < width; x++)
         {
@@ -321,15 +328,15 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile || inMap.GetTileData(x, y) == ironTile)
+                if (inMap.GetTileData(x, y) != bedrock && inMap.GetTileData(x, y) == stoneTile || inMap.GetTileData(x, y) == goldTile)
                 {
 
-                    int neighborIronTiles = GetSurroundingTileCount(x, y, goldTile, newTilemap);
+                    int neighborGoldTiles = GetSurroundingTileCount(x, y, goldTile, newTilemap);
                     int neighborWallTiles = GetSurroundingTileCount(x, y, stoneTile, newTilemap);
 
-                    if (neighborIronTiles > 3 && neighborIronTiles < 5 && neighborWallTiles > 5)
+                    if (neighborGoldTiles > 3 && neighborGoldTiles < 5 && neighborWallTiles > 4)
                         swapMap.SetTileData(x, y, goldTile);
-                    else if (neighborIronTiles < 3 || neighborIronTiles >= 5)
+                    else if (neighborGoldTiles < 3 || neighborGoldTiles >= 4)
                     {
                         swapMap.SetTileData(x, y, stoneTile);
                     }
@@ -515,7 +522,7 @@ public class GameManager : MonoBehaviour
 
         playerSpawnPoint = new Vector3(playerSpawnPoint.x, playerSpawnPoint.y, 0);
         player.transform.position = playerSpawnPoint;
-        player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
+        //player.GetComponent<PlayerController>().playerGridPos = playerSpawnPoint;
        
         Debug.Log("Player spawned to: (" + spawnPos.x + ", " + spawnPos.y + ")");
         player.SetActive(true);

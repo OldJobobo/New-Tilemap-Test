@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.UI;
 using CreativeSpore.SuperTilemapEditor;
 
@@ -13,14 +12,15 @@ public class PlayerController : MonoBehaviour
     public GameObject chuckGrid;
    
     public uint[] blockingTiles;
-    public Vector2 playerGridPos;
-    
-    
+
+    public Text turnNum;
     public Text console;
     public Text stoneAmt;
     public Text coalAmt;
     public Text ironAmt;
     public Text goldAmt;
+
+    public Canvas CraftingWindow;
 
     public GameObject roughStone;
     public GameObject coal;
@@ -34,9 +34,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip miningChip;
     public AudioClip pickUp;
 
-
     private bool isMoving;
     private bool miningMode;
+    public bool craftingWindow;
 
     private Vector3 origPos, targetPos;
     private float timeToMove = 0.2f;
@@ -51,13 +51,10 @@ public class PlayerController : MonoBehaviour
     private uint goldTile = 93;
     private uint bedrock = 96;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
-
-        playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (transform.position));
+        craftingWindow = false;
 
         renderer = this.GetComponent<SpriteRenderer>();
 
@@ -67,6 +64,19 @@ public class PlayerController : MonoBehaviour
         blockingTiles[3] = goldTile;
         blockingTiles[4] = bedrock;
       
+    }
+
+    void Update()
+    {
+       if(craftingWindow)
+        {
+            CraftingWindow.gameObject.SetActive(true);
+        }
+        else if (!craftingWindow)
+        {
+            CraftingWindow.gameObject.SetActive(false);
+        }
+
     }
 
     void FixedUpdate()
@@ -80,10 +90,8 @@ public class PlayerController : MonoBehaviour
             {
                 renderer.flipX = false;
                 StartCoroutine(MovePlayer(Vector3.right, GetNeighbor(Vector3.left)));
-            } else
-            {
-                DoTurn(Vector3.left);
-            }
+                DoTurn();
+            } 
         }
         if (Input.GetKey(KeyCode.D) && !isMoving)
         {
@@ -91,36 +99,47 @@ public class PlayerController : MonoBehaviour
             {
                 renderer.flipX = true;
                 StartCoroutine(MovePlayer(Vector3.left, GetNeighbor(Vector3.right)));
+                DoTurn();
             }
-            else
-            {
-                DoTurn(Vector3.right);
-            }
+            
         }
         if (Input.GetKey(KeyCode.W) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.up))
-            { StartCoroutine(MovePlayer(Vector3.down, GetNeighbor(Vector3.up))); }
-            else
-            {
-                DoTurn(Vector3.up);
+            { 
+                StartCoroutine(MovePlayer(Vector3.down, GetNeighbor(Vector3.up)));
+                DoTurn();
             }
+            
         }
         
         if (Input.GetKey(KeyCode.S) && !isMoving)
         {
             if (!CheckNeighbor(Vector3.down))
-            { StartCoroutine(MovePlayer(Vector3.up, GetNeighbor(Vector3.down))); }
-            else
-            {
-                DoTurn(Vector3.down);
+            { 
+                StartCoroutine(MovePlayer(Vector3.up, GetNeighbor(Vector3.down)));
+                DoTurn();
             }
+           
         }
         
         if (Input.GetKeyDown(KeyCode.G))
         {
             miningMode = true;
             //console.text += "\nMining Mode Activated.";
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (!craftingWindow)
+            {
+                craftingWindow = true;
+            }else
+            {
+                craftingWindow = false;
+            }
+
+
         }
 
     }
@@ -154,7 +173,10 @@ public class PlayerController : MonoBehaviour
                         tileObject.GetComponent<TileInfo>().SetHealth(tileHealth);
                         tileObject.GetComponent<TileInfo>().Flash();
                         miningMode = false;
-                        console.text = console.text + ("\nYou chip away at " + tileObject.name + ".");
+                        string clone = "(Clone)";
+                        string tileName = tileObject.name;
+                        string name = tileName.Replace(clone, "");
+                        console.text = console.text + ("\nYou chip away at " + name + ".");
                     }
                     else if (tileHealth <= 1)
                     {
@@ -165,8 +187,12 @@ public class PlayerController : MonoBehaviour
 
                         if (tileObject.name.Contains("Stone"))
                         {
-                            audioSource.PlayOneShot(miningChip, 0.9F);
+                           
                             GameObject stoneObj = Instantiate(roughStone, dropPos, Quaternion.identity);
+                            string clone = "(Clone)";
+                            string objName = stoneObj.name;
+                            string name = objName.Replace(clone, "");
+                            stoneObj.name = objName;
                             stoneObj.transform.SetParent(newTilemap.transform);
                             miningMode = false;
                             console.text = console.text + "\nYou mined Stone.";
@@ -175,6 +201,10 @@ public class PlayerController : MonoBehaviour
                         if (tileObject.name.Contains("Coal"))
                         {
                             GameObject coalObj = Instantiate(coal, dropPos, Quaternion.identity);
+                            string clone = "(Clone)";
+                            string objName = coalObj.name;
+                            string name = objName.Replace(clone, "");
+                            coalObj.name = objName;
                             coalObj.transform.SetParent(newTilemap.transform);
                             miningMode = false;
                             console.text = console.text + "\nYou mined Coal.";
@@ -183,6 +213,10 @@ public class PlayerController : MonoBehaviour
                         if (tileObject.name.Contains("Iron"))
                         {
                             GameObject ironObj = Instantiate(ironOre, dropPos, Quaternion.identity);
+                            string clone = "(Clone)";
+                            string objName = ironObj.name;
+                            string name = objName.Replace(clone, "");
+                            ironObj.name = objName;
                             ironObj.transform.SetParent(newTilemap.transform);
                             miningMode = false;
                             console.text = console.text + "\nYou mined Iron Ore.";
@@ -191,6 +225,10 @@ public class PlayerController : MonoBehaviour
                         if (tileObject.name.Contains("Gold"))
                         {
                             GameObject goldObj = Instantiate(goldCoins, dropPos, Quaternion.identity);
+                            string clone = "(Clone)";
+                            string objName = goldObj.name;
+                            string name = objName.Replace(clone, "");
+                            goldObj.name = objName;
                             goldObj.transform.SetParent(newTilemap.transform);
                             miningMode = false;
                             console.text = console.text + "\nYou mined Gold.";
@@ -201,6 +239,7 @@ public class PlayerController : MonoBehaviour
 
                     }
                 }
+                DoTurn();
             }
             else
             {
@@ -218,22 +257,30 @@ public class PlayerController : MonoBehaviour
         float elapsedTime = 0;
         origPos = newTilemap.transform.position;
         targetPos = origPos + direction;
+        Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
+
         if (groundType == dirtTile)
         {
-            audioSource.PlayOneShot(footstep, 0.6F);
-            
+            audioSource.PlayOneShot(footstep, 0.5F);
+            yield return new WaitForSeconds(.2f);
         }
         else if (groundType == grassTile)
         {
-            audioSource.PlayOneShot(footstepGrass, 0.6F);
-            
+            audioSource.PlayOneShot(footstepGrass, 0.5F);
+            yield return new WaitForSeconds(.2f);
         }
         else if (groundType == waterTile)
         {
             console.text += "\nYou got wet!";
             audioSource.PlayOneShot(footstepWater, 0.6F);
-            
+            yield return new WaitForSeconds(.2f);
         }
+        else if (groundType == stoneTile || groundType == coalTile || groundType == ironTile || groundType == goldTile)
+        {
+            if (miningMode)
+            { DoMine(targetCell); }
+        }
+        
 
         while (elapsedTime < timeToMove)
         {
@@ -261,7 +308,6 @@ public class PlayerController : MonoBehaviour
 
             foreach (uint tile in blockingTiles)
             {
-                //print("Testing: " + tile);
                 if (tile == newTilemap.GetTileData(targetCell))
                 { isBlocking = true;  return isBlocking; }
                 else
@@ -273,17 +319,13 @@ public class PlayerController : MonoBehaviour
     }
 
     uint GetNeighbor(Vector3 direction)
-    {
-        
-        
+    {       
         Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
-
         Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (playerPos + direction));
 
         uint testTile = newTilemap.GetTileData(targetCell);
                        
         return testTile;
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -335,11 +377,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void DoTurn(Vector3 direction)
+    void DoTurn()
     {
-      
-           
-        
+        int tNum;
+        int.TryParse(turnNum.text, out tNum);
+        tNum++;
+        turnNum.text = tNum.ToString();        
     }
    
 }

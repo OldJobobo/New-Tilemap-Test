@@ -271,8 +271,8 @@ TextureImporter:
       name: RogueSpriteSheet-01_6
       rect:
         serializedVersion: 2
-        x: 48
-        y: 224
+        x: 0
+        y: 208
         width: 16
         height: 16
       alignment: 0
