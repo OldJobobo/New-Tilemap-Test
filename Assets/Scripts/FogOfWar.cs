@@ -12,6 +12,7 @@ public class FogOfWar : MonoBehaviour
     public STETilemap fogTilemap;
     public STETilemap tilemap;
     public Vector2 playerGridPos;
+
     public int[][] xyoffsets = new int[37][]{
                                                       new int[2] { -1, -3 }, new int[2] { 0, -3 }, new int[2] { 1, -3 },
 
@@ -38,7 +39,7 @@ public class FogOfWar : MonoBehaviour
 
         gameManager = gameObj.GetComponent<GameManager>();
 
-        
+
 
 
         for (int x = 0; x < gameManager.width; x++)
@@ -63,8 +64,6 @@ public class FogOfWar : MonoBehaviour
     void Update()
     {
 
-        Vector3 playerPos = player.transform.position;
-        playerGridPos = TilemapUtils.GetGridPosition(tilemap, (playerPos));
 
 
         /* old method preserve for possible use elsewhere.
@@ -80,6 +79,9 @@ public class FogOfWar : MonoBehaviour
         }
         */
 
+        Vector3 playerPos = player.transform.position;
+        playerGridPos = TilemapUtils.GetGridPosition(tilemap, (playerPos));
+
 
         foreach (int[] xyoffset in xyoffsets)
         {
@@ -87,9 +89,25 @@ public class FogOfWar : MonoBehaviour
             int j = (int)playerGridPos.y + xyoffset[1];
             // process tile (i,j)
             fogTilemap.SetTileData(i, j, 2);
+
+            //GameObject tileObject = tilemap.GetTileObject(i, j);
+            //tileObject.gameObject.GetComponent<TileInfo>().SetExplored(true);
         }
 
+        for (int x = 0; x < gameManager.width; x++)
+        {
+            for (int y = 0; y < gameManager.height; y++)
+            {
+
+                //GameObject tileObject = tilemap.GetTileObject(x, y);
+                //TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
+
+                //bool explored = tileInfo.GetExplored();
+                //if (explored)
+                //    fogTilemap.SetTileData(x, y, 1);
 
 
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CreativeSpore.SuperTilemapEditor;
 
+[System.Serializable]
 public class TileInfo : MonoBehaviour
 {
 
@@ -10,7 +11,7 @@ public class TileInfo : MonoBehaviour
     private SimpleFlash flashEffect;
 
     private int health = 0;
-    private bool explored = false;
+    
 
 
 
@@ -24,15 +25,15 @@ public class TileInfo : MonoBehaviour
 
         if (name.Contains("Stone"))
         {
-            SetHealth(4);
+            SetHealth(2);
         } 
         else if (name.Contains("Coal"))
         {
-            SetHealth(6);
+            SetHealth(4);
         }
         else if (name.Contains("Iron"))
         {
-            SetHealth(8);
+            SetHealth(6);
         }
         else if (name.Contains("Gold"))
         {
@@ -61,13 +62,5 @@ public class TileInfo : MonoBehaviour
         flashEffect.Flash();
     }
 
-    public void SetExplored(bool state)
-    {
-        explored = state;
-    }
 
-    public bool GetExplored()
-    {
-        return explored;
-    }
 }

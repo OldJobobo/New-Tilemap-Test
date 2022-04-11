@@ -9,8 +9,12 @@ public class PlayerController : MonoBehaviour
 {
     
     public STETilemap newTilemap;
-    public GameObject chuckGrid;
-   
+    public STETilemap fogTilemap;
+    //public GameObject chuckGrid;
+    public GameObject gameObj;
+    private GameManager gameManager;
+    public Vector2 playerGridPos;
+
     public uint[] blockingTiles;
 
     public Text turnNum;
@@ -51,10 +55,28 @@ public class PlayerController : MonoBehaviour
     private uint goldTile = 93;
     private uint bedrock = 96;
 
+    public int[][] xyoffsets = new int[37][]{
+                                                      new int[2] { -1, -3 }, new int[2] { 0, -3 }, new int[2] { 1, -3 },
+
+                               new int[2] { -2, -2 }, new int[2] { -1, -2 }, new int[2] { 0, -2 }, new int[2] { 1, -2 }, new int[2] { 2, -2 },
+
+        new int[2] { -3, -1 }, new int[2] { -2, -1 }, new int[2] { -1, -1 }, new int[2] { 0, -1 }, new int[2] { 1, -1 }, new int[2] { 2,  1 }, new int[2] { 3,  1 },
+
+        new int[2] { -3,  0 }, new int[2] { -2,  0 }, new int[2] { -1,  0 }, new int[2] { 1,  0 }, new int[2] {-1,  1 }, new int[2] { 2,  0 }, new int[2] { 3,  0 },
+
+        new int[2] { -3,  1 }, new int[2] { -2,  1 }, new int[2] {  0,  1 }, new int[2] { 1,  1 }, new int[2] { 0,  0 }, new int[2] { 2, -1 }, new int[2] { 3, -1 },
+
+                               new int[2] { -2,  2 }, new int[2] { -1,  2 }, new int[2] { 0,  2 }, new int[2] { 1,  2 }, new int[2] { 2, 2 },
+
+                                                      new int[2] { -1,  3 }, new int[2] { 0,  3 }, new int[2] { 1,  3 }
+    };
+
     // Start is called before the first frame update
     void Start()
     {
         craftingWindow = false;
+
+        gameManager = gameObj.GetComponent<GameManager>();
 
         renderer = this.GetComponent<SpriteRenderer>();
 
@@ -76,6 +98,8 @@ public class PlayerController : MonoBehaviour
         {
             CraftingWindow.gameObject.SetActive(false);
         }
+
+       
 
     }
 

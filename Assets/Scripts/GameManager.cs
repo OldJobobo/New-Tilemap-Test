@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public Texture2D cursorTexture;
     public Canvas blackout;
 
+    public TileStats[,] tileStats;
+
     public Canvas EscMenu;
     private bool escMenu;
 
@@ -48,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     public int width = 180;
     public int height = 180;
-    private int previous;
+    //private int previous;
     public System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
 
@@ -87,17 +89,18 @@ public class GameManager : MonoBehaviour
 
         enemy.GetComponent<EnemyController>().MoveEnenmy();
 
+       
 
         newTilemap.gameObject.SetActive(true);
 
+        InitTileStats(newTilemap);
 
         StartCoroutine(BlackoutOff());
     }
 
     private IEnumerator BlackoutOff()
     {
-        new WaitForSeconds(5);
-
+        
         blackout.gameObject.SetActive(false);
        
         yield return null;
@@ -594,5 +597,72 @@ public class GameManager : MonoBehaviour
            
     }
 
+    void InitTileStats(STETilemap inMap)
+    {
+        //Set the size of the array
+        tileStats = new TileStats[width, height];
+        //Set the very first entry in the array as a new TileData
+        tileStats[0, 0] = new TileStats();
+        //Set the very first entry's TileType as "Wall"
+        tileStats[0, 0].Type = "";
 
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+
+                if (inMap.GetTileData(x, y) == dirtTile)
+                {
+                    tileStats[x, y].Type = "Dirt"; 
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 0;
+                }
+                else if (inMap.GetTileData(x, y) == grassTile)
+                {
+                    tileStats[x, y].Type = "Grass";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 0;
+                }
+                else if (inMap.GetTileData(x, y) == waterTile)
+                {
+                    tileStats[x, y].Type = "Water";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 0;
+                }
+                else if (inMap.GetTileData(x, y) == stoneTile)
+                {
+                    tileStats[x, y].Type = "Stone";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 2;
+                }
+                else if (inMap.GetTileData(x, y) == coalTile)
+                {
+                    tileStats[x, y].Type = "Coal";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 4;
+                }
+                else if (inMap.GetTileData(x, y) == ironTile)
+                {
+                    tileStats[x, y].Type = "Iron";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 6;
+                }
+                else if (inMap.GetTileData(x, y) == goldTile)
+                {
+                    tileStats[x, y].Type = "Gold";
+                    tileStats[x, y].explored = false;
+                    tileStats[x, y].health = 8;
+                }
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class TileStats
+{
+    public string Type;
+    public bool explored;
+    public int health;
+    
 }
