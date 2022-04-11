@@ -7,12 +7,19 @@ using CreativeSpore.SuperTilemapEditor;
 public class GameManager : MonoBehaviour
 {
     public GameObject player;
+    public GameObject enemy;
     public string seed;
     public bool useRandomSeed;
+    public STETilemap fogTilemap;
     public STETilemap newTilemap;
     public STETilemap swapMap;
     public STETilemap tmPrefab;
     public GameObject chuckGrid;
+    public Texture2D cursorTexture;
+    public Canvas blackout;
+
+    public Canvas EscMenu;
+    private bool escMenu;
 
     [Range(0, 100)]
     public int stonePercentage;
@@ -39,30 +46,35 @@ public class GameManager : MonoBehaviour
     [Range(0, 10)]
     public int goldSmoothing;
 
-    private int width = 180;
-    private int height = 180;
+    public int width = 180;
+    public int height = 180;
     private int previous;
-    private System.Random pseudoRandom;
+    public System.Random pseudoRandom;
     private Vector2 playerSpawn = new Vector2(0, 0);
-   
 
-    private uint dirtTile = 0;
-    private uint stoneTile = 63;
-    private uint waterTile = 2;
-    private uint grassTile = 31;
-    private uint coalTile = 64;
-    private uint ironTile = 94;
-    private uint goldTile = 93;
-    private uint bedrock = 96;
+
+    public uint dirtTile = 0;
+    public uint stoneTile = 63;
+    public uint waterTile = 2;
+    public uint grassTile = 31;
+    public uint coalTile = 64;
+    public uint ironTile = 94;
+    public uint goldTile = 93;
+    public uint bedrock = 96;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //SceneManager.LoadScene("Title Screen");
+        // SceneManager.LoadScene("Title Screen");
+        fogTilemap.gameObject.SetActive(true);
 
-       StartNewGame();
+        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+
+        StartNewGame();
+
+       
     }
 
     void StartNewGame()
@@ -73,9 +85,23 @@ public class GameManager : MonoBehaviour
 
         SpawnPlayer(newTilemap, playerSpawn);
 
+        enemy.GetComponent<EnemyController>().MoveEnenmy();
+
+
         newTilemap.gameObject.SetActive(true);
+
+
+        StartCoroutine(BlackoutOff());
     }
 
+    private IEnumerator BlackoutOff()
+    {
+        new WaitForSeconds(5);
+
+        blackout.gameObject.SetActive(false);
+       
+        yield return null;
+    }
 
     STETilemap GenerateMapChunk(STETilemap inMap)
     {
@@ -498,8 +524,8 @@ public class GameManager : MonoBehaviour
 
         while (isBlocking)
         {
-            int randomX = Random.Range(2, width);
-            int randomY = Random.Range(2, height);
+            int randomX = pseudoRandom.Next(2, width);
+            int randomY = pseudoRandom.Next(2, height);
 
             Vector2 testPos = new Vector2(randomX, randomY);
 
@@ -549,8 +575,23 @@ public class GameManager : MonoBehaviour
           
         }
 
+        if (escMenu)
+        {
+            EscMenu.gameObject.SetActive(true);
+        }
+        else if (!escMenu)
+        {
+            EscMenu.gameObject.SetActive(false);
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
+        {
+            if (!escMenu)
+                escMenu = true;
+            else
+                escMenu = false;
+        }
+           
     }
 
 

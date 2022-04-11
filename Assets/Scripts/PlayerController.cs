@@ -123,11 +123,13 @@ public class PlayerController : MonoBehaviour
            
         }
         
+        /*
         if (Input.GetKeyDown(KeyCode.G))
         {
             miningMode = true;
             //console.text += "\nMining Mode Activated.";
         }
+        */
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -147,8 +149,8 @@ public class PlayerController : MonoBehaviour
     public void DoMine(Vector2 targetPos)
     {
 
-        if (miningMode)
-        {
+        //if (miningMode)
+        //{
             Vector3 playerPos = newTilemap.transform.InverseTransformPoint(transform.position);
             Vector2 playerGridPos = TilemapUtils.GetGridPosition(newTilemap, (playerPos));
 
@@ -245,7 +247,7 @@ public class PlayerController : MonoBehaviour
             {
                 console.text = console.text + "\nYou are too far away to mine that.";
             }
-        }
+       // }
     }
     
 

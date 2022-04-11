@@ -17,11 +17,7 @@ public class UIController : MonoBehaviour
         
     }
 
-    void LoadNewGame()
-    {
-        SceneManager.LoadScene("MainGameScene");
-        SceneManager.UnloadSceneAsync("Title Screen");
-;    }
+    
 
     private void OnMouseUpAsButton()
     {
