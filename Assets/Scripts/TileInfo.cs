@@ -10,6 +10,7 @@ public class TileInfo : MonoBehaviour
     private SimpleFlash flashEffect;
 
     private int health = 0;
+    private bool explored = false;
 
 
 
@@ -35,7 +36,7 @@ public class TileInfo : MonoBehaviour
         }
         else if (name.Contains("Gold"))
         {
-            SetHealth(10);
+            SetHealth(8);
         }
     }
 
@@ -58,5 +59,15 @@ public class TileInfo : MonoBehaviour
     public void Flash()
     {
         flashEffect.Flash();
+    }
+
+    public void SetExplored(bool state)
+    {
+        explored = state;
+    }
+
+    public bool GetExplored()
+    {
+        return explored;
     }
 }
