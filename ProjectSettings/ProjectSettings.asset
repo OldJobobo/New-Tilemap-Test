@@ -564,6 +564,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
     1: SUPER_TILEMAP_EDITOR
+    13: SUPER_TILEMAP_EDITOR
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

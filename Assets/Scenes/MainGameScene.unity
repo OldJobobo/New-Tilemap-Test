@@ -1282,7 +1282,6 @@ MonoBehaviour:
   newTilemap: {fileID: 1394156376}
   swapMap: {fileID: 1903755962}
   tmPrefab: {fileID: 1734878901957620339, guid: 8bd84539c800ef642bbef64fc6dad9ab, type: 3}
-  chuckGrid: {fileID: 888439591}
   cursorTexture: {fileID: 2800000, guid: a9ae0267b06e7b24d90f188a4370cce3, type: 3}
   blackout: {fileID: 2007485797}
   EscMenu: {fileID: 1223390224}
