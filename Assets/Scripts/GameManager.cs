@@ -6,8 +6,11 @@ using CreativeSpore.SuperTilemapEditor;
 
 namespace Svartalfheim
 {
+    
     public class GameManager : MonoBehaviour
     {
+        public static GameManager Instance { get; private set; }    
+
         public GameObject player;
         public GameObject enemy;
         public string seed;
@@ -66,7 +69,17 @@ namespace Svartalfheim
         public uint goldTile = 93;
         public uint bedrock = 96;
 
+        public void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
 
         // Start is called before the first frame update
         void Start()

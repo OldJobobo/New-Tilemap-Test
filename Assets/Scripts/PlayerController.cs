@@ -91,20 +91,6 @@ namespace Svartalfheim
 
         }
 
-        void Update()
-        {
-            if (craftingWindow)
-            {
-                CraftingWindow.gameObject.SetActive(true);
-            }
-            else if (!craftingWindow)
-            {
-                CraftingWindow.gameObject.SetActive(false);
-            }
-
-
-
-        }
 
         void FixedUpdate()
         {
@@ -172,6 +158,14 @@ namespace Svartalfheim
 
             }
 
+            if (craftingWindow)
+            {
+                CraftingWindow.gameObject.SetActive(true);
+            }
+            else if (!craftingWindow)
+            {
+                CraftingWindow.gameObject.SetActive(false);
+            }
         }
 
         public void DoMine(Vector2 targetPos)

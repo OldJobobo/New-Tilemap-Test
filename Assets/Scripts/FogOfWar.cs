@@ -54,7 +54,7 @@ namespace Svartalfheim
                     if (gridPos != playerGridPos)
                     {
 
-                       // fogTilemap.SetTileData(x, y, 0);
+                        fogTilemap.SetTileData(x, y, 0);
 
                     }
 
@@ -90,7 +90,7 @@ namespace Svartalfheim
                 int i = (int)playerGridPos.x + xyoffset[0];
                 int j = (int)playerGridPos.y + xyoffset[1];
                 // process tile (i,j)
-               // fogTilemap.SetTileData(i, j, 2);
+                fogTilemap.SetTileData(i, j, 2);
 
                 //GameObject tileObject = tilemap.GetTileObject(i, j);
                 //tileObject.gameObject.GetComponent<TileInfo>().SetExplored(true);
