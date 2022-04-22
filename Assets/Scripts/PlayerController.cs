@@ -16,6 +16,7 @@ namespace Svartalfheim
         //public GameObject chuckGrid;
         public GameObject gameObj;
         private GameManager gameManager;
+        private FogOfWar fogOfWar;
         public Vector2 playerGridPos;
 
         public uint[] blockingTiles;
@@ -403,10 +404,17 @@ namespace Svartalfheim
 
         void DoTurn()
         {
+
+            fogOfWar = fogTilemap.GetComponent<FogOfWar>();
+
+            fogOfWar.SetExploredTiles();
+
             int tNum;
             int.TryParse(turnNum.text, out tNum);
             tNum++;
             turnNum.text = tNum.ToString();
+
+
         }
 
     }

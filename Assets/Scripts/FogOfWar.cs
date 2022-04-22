@@ -15,20 +15,24 @@ namespace Svartalfheim
         public STETilemap tilemap;
         public Vector2 playerGridPos;
 
-        public int[][] xyoffsets = new int[37][]{
-                                                      new int[2] { -1, -3 }, new int[2] { 0, -3 }, new int[2] { 1, -3 },
+        public int[][] xyoffsets = new int[57][]{
+                                                                             new int[2] { -1, -4 }, new int[2] { 0, -4 }, new int[2] { 1, -4 },
 
-                               new int[2] { -2, -2 }, new int[2] { -1, -2 }, new int[2] { 0, -2 }, new int[2] { 1, -2 }, new int[2] { 2, -2 },
+                                                      new int[2] { -2, -3 }, new int[2] { -1, -3 }, new int[2] { 0, -3 }, new int[2] { 1, -3 }, new int[2] { 2, -3 },
 
-        new int[2] { -3, -1 }, new int[2] { -2, -1 }, new int[2] { -1, -1 }, new int[2] { 0, -1 }, new int[2] { 1, -1 }, new int[2] { 2,  1 }, new int[2] { 3,  1 },
+                               new int[2] { -3, -2 }, new int[2] { -2, -2 }, new int[2] { -1, -2 }, new int[2] { 0, -2 }, new int[2] { 1, -2 }, new int[2] { 2, -2 }, new int[2] { 3, -2 },
 
-        new int[2] { -3,  0 }, new int[2] { -2,  0 }, new int[2] { -1,  0 }, new int[2] { 1,  0 }, new int[2] {-1,  1 }, new int[2] { 2,  0 }, new int[2] { 3,  0 },
+        new int[2] { -4, -1 }, new int[2] { -3, -1 }, new int[2] { -2, -1 }, new int[2] { -1, -1 }, new int[2] { 0, -1 }, new int[2] { 1, -1 }, new int[2] { 2,  1 }, new int[2] { 3,  1 }, new int[2] { 4,  1 },
 
-        new int[2] { -3,  1 }, new int[2] { -2,  1 }, new int[2] {  0,  1 }, new int[2] { 1,  1 }, new int[2] { 0,  0 }, new int[2] { 2, -1 }, new int[2] { 3, -1 },
+        new int[2] { -4,  0 }, new int[2] { -3,  0 }, new int[2] { -2,  0 }, new int[2] { -1,  0 }, new int[2] { 0,  0 }, new int[2] { 1,  0 }, new int[2] { 2,  0 }, new int[2] { 3,  0 }, new int[2] { 4,  0 },
 
-                               new int[2] { -2,  2 }, new int[2] { -1,  2 }, new int[2] { 0,  2 }, new int[2] { 1,  2 }, new int[2] { 2, 2 },
+        new int[2] { -4,  1 }, new int[2] { -3,  1 }, new int[2] { -2,  1 }, new int[2] { -1,  1 }, new int[2] { 0,  1 }, new int[2] { 1,  1 }, new int[2] { 2, -1 }, new int[2] { 3, -1 }, new int[2] { 4, -1 },
 
-                                                      new int[2] { -1,  3 }, new int[2] { 0,  3 }, new int[2] { 1,  3 }
+                               new int[2] { -3,  2 }, new int[2] { -2,  2 }, new int[2] { -1,  2 }, new int[2] { 0,  2 }, new int[2] { 1,  2 }, new int[2] { 2, 2 },  new int[2] { 3, 2 },
+
+                                                      new int[2] { -2,  3 }, new int[2] { -1,  3 }, new int[2] { 0,  3 }, new int[2] { 1,  3 }, new int[2] { 2,  3 },
+
+                                                                             new int[2] { -1,  4 }, new int[2] { 0,  4 }, new int[2] { 1,  4 }
     };
 
         // Start is called before the first frame update
@@ -49,12 +53,17 @@ namespace Svartalfheim
                 for (int y = 0; y < gameManager.height; y++)
                 {
                     Vector2 gridPos = new Vector2(x, y);
-                    Vector2 diff = (playerGridPos - gridPos);
+                    //Vector2 diff = (playerGridPos - gridPos);
 
-                    if (gridPos != playerGridPos)
+                    //GameObject tileObject = tilemap.GetTileObject(x, y);
+                    //TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
+
+                    //bool explored = tileInfo.GetExplored();
+
+                    if (gridPos != playerGridPos )
                     {
-
-                        fogTilemap.SetTileData(x, y, 0);
+                        
+                            fogTilemap.SetTileData(x, y, 0);
 
                     }
 
@@ -90,23 +99,28 @@ namespace Svartalfheim
                 int i = (int)playerGridPos.x + xyoffset[0];
                 int j = (int)playerGridPos.y + xyoffset[1];
                 // process tile (i,j)
-                fogTilemap.SetTileData(i, j, 2);
+               fogTilemap.SetTileData(i, j, 2);
 
-                //GameObject tileObject = tilemap.GetTileObject(i, j);
-                //tileObject.gameObject.GetComponent<TileInfo>().SetExplored(true);
+                GameObject tileObject = tilemap.GetTileObject(i, j);
+                tileObject.gameObject.GetComponent<TileInfo>().SetExplored(true);
             }
 
+            
+        }
+
+        public void SetExploredTiles()
+        {
             for (int x = 0; x < gameManager.width; x++)
             {
                 for (int y = 0; y < gameManager.height; y++)
                 {
 
-                    //GameObject tileObject = tilemap.GetTileObject(x, y);
-                    //TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
+                    GameObject tileObject = tilemap.GetTileObject(x, y);
+                    TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
 
-                    //bool explored = tileInfo.GetExplored();
-                    //if (explored)
-                    //    fogTilemap.SetTileData(x, y, 1);
+                    bool explored = tileInfo.GetExplored();
+                    if (explored)
+                        fogTilemap.SetTileData(x, y, 1);
 
 
                 }

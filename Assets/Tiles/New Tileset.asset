@@ -39,7 +39,7 @@ MonoBehaviour:
     paramContainer:
       m_paramList: []
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1542554991401490351, guid: bc2decf113d4c954189bfe7e9e41b5b7, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
     paramContainer:
       m_paramList: []
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 774953360549426112, guid: 9bb89901b93ba504cbebfb7b571d2f79, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -628,7 +628,7 @@ MonoBehaviour:
     paramContainer:
       m_paramList: []
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 3438676483312576641, guid: 7ea8e33341fe5f44db89807ff6180a49, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0
@@ -1891,7 +1891,7 @@ MonoBehaviour:
     paramContainer:
       m_paramList: []
     prefabData:
-      prefab: {fileID: 0}
+      prefab: {fileID: 4474748671539500806, guid: 2c385882a9606534ca42ccb7b468a825, type: 3}
       offset: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
       offsetMode: 0

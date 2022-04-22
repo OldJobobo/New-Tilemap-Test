@@ -11,6 +11,7 @@ public class TileInfo : MonoBehaviour
     private SimpleFlash flashEffect;
 
     private int health = 0;
+    private bool isExplored = false;
     
 
 
@@ -58,5 +59,13 @@ public class TileInfo : MonoBehaviour
         flashEffect.Flash();
     }
 
+    public void SetExplored(bool explored)
+    {
+        isExplored = explored;
+    }
 
+    public bool GetExplored()
+    {
+        return isExplored;
+    }
 }
