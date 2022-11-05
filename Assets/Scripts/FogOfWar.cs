@@ -36,7 +36,7 @@ namespace Svartalfheim
     };
 
         // Start is called before the first frame update
-        void Awake()
+        void Start()
         {
 
             Vector3 playerPos = player.transform.position;
@@ -45,7 +45,7 @@ namespace Svartalfheim
 
             gameManager = gameObj.GetComponent<GameManager>();
 
-
+           
 
 
             for (int x = 0; x < gameManager.width; x++)
@@ -55,12 +55,12 @@ namespace Svartalfheim
                     Vector2 gridPos = new Vector2(x, y);
                     //Vector2 diff = (playerGridPos - gridPos);
 
-                    //GameObject tileObject = tilemap.GetTileObject(x, y);
-                    //TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
+                    GameObject tileObject = tilemap.GetTileObject(x, y);
+                    TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
 
-                    //bool explored = tileInfo.GetExplored();
+                    bool explored = tileInfo.GetExplored();
 
-                    if (gridPos != playerGridPos )
+                    if (gridPos != playerGridPos || explored)
                     {
                         
                             fogTilemap.SetTileData(x, y, 0);
@@ -69,6 +69,8 @@ namespace Svartalfheim
 
                 }
             }
+
+            PlayerLOS();
         }
 
         // Update is called once per frame
@@ -90,6 +92,35 @@ namespace Svartalfheim
             }
             */
 
+            
+
+            
+        }
+
+        public void UpdateFog()
+        {
+            for (int x = 0; x < gameManager.width; x++)
+            {
+                for (int y = 0; y < gameManager.height; y++)
+                {
+
+                    GameObject tileObject = tilemap.GetTileObject(x, y);
+                    TileInfo tileInfo = tileObject.gameObject.GetComponent<TileInfo>();
+
+                    bool explored = tileInfo.GetExplored();
+                    if (explored)
+                    {
+                        fogTilemap.SetTileData(x, y, 1);
+
+                    }
+
+
+                }
+            }
+        }
+
+        public void PlayerLOS()
+        {
             Vector3 playerPos = player.transform.position;
             playerGridPos = TilemapUtils.GetGridPosition(tilemap, (playerPos));
 
@@ -99,15 +130,12 @@ namespace Svartalfheim
                 int i = (int)playerGridPos.x + xyoffset[0];
                 int j = (int)playerGridPos.y + xyoffset[1];
                 // process tile (i,j)
-               fogTilemap.SetTileData(i, j, 2);
+                fogTilemap.SetTileData(i, j, 2);
 
                 GameObject tileObject = tilemap.GetTileObject(i, j);
                 tileObject.gameObject.GetComponent<TileInfo>().SetExplored(true);
             }
-
-            
         }
-
         public void SetExploredTiles()
         {
             for (int x = 0; x < gameManager.width; x++)
@@ -120,11 +148,15 @@ namespace Svartalfheim
 
                     bool explored = tileInfo.GetExplored();
                     if (explored)
-                        fogTilemap.SetTileData(x, y, 1);
+                    {
+                        fogTilemap.SetTileData(x, y, 1); 
+                       
+                    }
 
 
                 }
             }
+            PlayerLOS();
         }
     }
 }

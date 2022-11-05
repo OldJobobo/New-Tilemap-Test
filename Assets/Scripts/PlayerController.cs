@@ -408,7 +408,9 @@ namespace Svartalfheim
             fogOfWar = fogTilemap.GetComponent<FogOfWar>();
 
             fogOfWar.SetExploredTiles();
+            //fogOfWar.UpdateFog();
 
+            //Update Turn number.
             int tNum;
             int.TryParse(turnNum.text, out tNum);
             tNum++;
