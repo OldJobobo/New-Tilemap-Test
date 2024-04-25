@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using CreativeSpore.SuperTilemapEditor;
 
+
 namespace Svartalfheim
 {
 
@@ -42,6 +43,7 @@ namespace Svartalfheim
         public AudioClip miningChip;
         public AudioClip pickUp;
 
+        private bool enemyCollision;
         private bool isMoving;
         private bool miningMode;
         public bool craftingWindow;
@@ -58,6 +60,8 @@ namespace Svartalfheim
         private uint ironTile = 94;
         private uint goldTile = 93;
         private uint bedrock = 96;
+
+        private Vector3 lastPosition;
 
         public int[][] xyoffsets = new int[37][]{
                                                       new int[2] { -1, -3 }, new int[2] { 0, -3 }, new int[2] { 1, -3 },
@@ -78,24 +82,30 @@ namespace Svartalfheim
         // Start is called before the first frame update
         void Start()
         {
-            craftingWindow = false;
+            craftingWindow = false; // Crafting window is not open by default
 
-            gameManager = gameObj.GetComponent<GameManager>();
+            gameManager = gameObj.GetComponent<GameManager>(); // Get the GameManager script
 
-            renderer = this.GetComponent<SpriteRenderer>();
+            renderer = this.GetComponent<SpriteRenderer>(); // Get the sprite renderer
 
-            blockingTiles[0] = stoneTile;
+            // Set the blocking tiles
+            blockingTiles[0] = stoneTile; 
             blockingTiles[1] = coalTile;
             blockingTiles[2] = ironTile;
             blockingTiles[3] = goldTile;
             blockingTiles[4] = bedrock;
+
+            lastPosition = transform.position; // Set last position to the player's starting position
 
         }
 
 
         void FixedUpdate()
         {
-
+            if (!isMoving)
+            {
+                lastPosition = transform.position;
+            }
 
             if (Input.GetKey(KeyCode.A) && !isMoving)
             {
@@ -277,47 +287,57 @@ namespace Svartalfheim
 
         private IEnumerator MovePlayer(Vector3 direction, uint groundType)
         {
-
-            isMoving = true;
-            float elapsedTime = 0;
-            origPos = newTilemap.transform.position;
-            targetPos = origPos + direction;
-            Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
-
-            if (groundType == dirtTile)
+            if (!enemyCollision)
             {
-                audioSource.PlayOneShot(footstep, 0.5F);
-                yield return new WaitForSeconds(.2f);
-            }
-            else if (groundType == grassTile)
-            {
-                audioSource.PlayOneShot(footstepGrass, 0.5F);
-                yield return new WaitForSeconds(.2f);
-            }
-            else if (groundType == waterTile)
-            {
-                console.text += "\nYou got wet!";
-                audioSource.PlayOneShot(footstepWater, 0.6F);
-                yield return new WaitForSeconds(.2f);
-            }
-            else if (groundType == stoneTile || groundType == coalTile || groundType == ironTile || groundType == goldTile)
-            {
-                if (miningMode)
-                { DoMine(targetCell); }
-            }
+                isMoving = true;
+                float elapsedTime = 0;
+                origPos = newTilemap.transform.position;
+                targetPos = origPos + direction;
+                Vector2 targetCell = TilemapUtils.GetGridPosition(newTilemap, (targetPos));
+
+                if (groundType == dirtTile)
+                {
+                    audioSource.PlayOneShot(footstep, 0.5F);
+                    yield return new WaitForSeconds(.2f);
+                }
+                else if (groundType == grassTile)
+                {
+                    audioSource.PlayOneShot(footstepGrass, 0.5F);
+                    yield return new WaitForSeconds(.2f);
+                }
+                else if (groundType == waterTile)
+                {
+                    console.text += "\nYou got wet!";
+                    audioSource.PlayOneShot(footstepWater, 0.6F);
+                    yield return new WaitForSeconds(.2f);
+                }
+                else if (groundType == stoneTile || groundType == coalTile || groundType == ironTile || groundType == goldTile)
+                {
+                    if (miningMode)
+                    { DoMine(targetCell); }
+                }
+                
 
 
-            while (elapsedTime < timeToMove)
-            {
-                newTilemap.transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / timeToMove));
-                elapsedTime += Time.deltaTime;
-                yield return null;
+                while (elapsedTime < timeToMove)
+                {
+                    newTilemap.transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / timeToMove));
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+
+                newTilemap.transform.position = targetPos;
+                Vector2 gridPos = TilemapUtils.GetGridWorldPos(newTilemap, (int)targetPos.x, (int)targetPos.y);
+                Debug.Log("Player moved to " + gridPos.x + " , " + gridPos.y);
+                isMoving = false;
             }
-
-            newTilemap.transform.position = targetPos;
-
-            isMoving = false;
+            else
+            {
+                console.text = console.text + "\nYou can't move there, there is an enemy in the way!";
+            }
         }
+
+        
 
         bool CheckNeighbor(Vector3 direction)
         {
@@ -400,21 +420,31 @@ namespace Svartalfheim
                 audioSource.PlayOneShot(pickUp, 0.7F);
                 console.text = console.text + "\nRock On!!! You picked up Gold.";
             }
+            else if (name.Contains("Enemy"))
+            {
+                Debug.Log("Enemy Collision");
+                enemyCollision = true;
+                transform.position = lastPosition;
+            }
+            else if (!name.Contains("Enemy"))
+            {
+                enemyCollision = false;
+            }
         }
 
         void DoTurn()
         {
 
-            fogOfWar = fogTilemap.GetComponent<FogOfWar>();
+            //fogOfWar = fogTilemap.GetComponent<FogOfWar>();
 
-            fogOfWar.SetExploredTiles();
-            //fogOfWar.UpdateFog();
+            //fogOfWar.SetExploredTiles();
+           // fogOfWar.UpdateFog();
 
             //Update Turn number.
             int tNum;
-            int.TryParse(turnNum.text, out tNum);
-            tNum++;
-            turnNum.text = tNum.ToString();
+            int.TryParse(turnNum.text, out tNum); // get the current turn number and output it to tNum string.
+            tNum++; // increment tNum by 1.
+            turnNum.text = tNum.ToString(); // set the turnNum text to the new value of tNum.
 
 
         }

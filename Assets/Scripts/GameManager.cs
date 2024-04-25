@@ -15,18 +15,19 @@ namespace Svartalfheim
         public GameObject enemy;
         public string seed;
         public bool useRandomSeed;
-        public STETilemap fogTilemap;
+       // public STETilemap fogTilemap;
         public STETilemap newTilemap;
         public STETilemap swapMap;
         public STETilemap tmPrefab;
         //public GameObject chuckGrid;
         public Texture2D cursorTexture;
-        public Canvas blackout;
+        //public Canvas blackout;
 
         public TileStats[,] tileStats;
 
         public Canvas EscMenu;
         private bool escMenu;
+
 
         [Range(0, 100)]
         public int stonePercentage;
@@ -85,9 +86,9 @@ namespace Svartalfheim
         void Start()
         {
             // SceneManager.LoadScene("Title Screen");
-            fogTilemap.gameObject.SetActive(true);
+            //fogTilemap.gameObject.SetActive(true);
 
-            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto); // Set custom mouse cursor
 
             StartNewGame();
 
@@ -96,29 +97,29 @@ namespace Svartalfheim
 
         void StartNewGame()
         {
-            newTilemap = GenerateMapChunk(newTilemap);
+            newTilemap = GenerateMapChunk(newTilemap); // Generate new map chunk
 
-            playerSpawn = FindPlayerSpawn(newTilemap);
+            playerSpawn = FindPlayerSpawn(newTilemap); // Find player spawn
 
-            SpawnPlayer(newTilemap, playerSpawn);
+            SpawnPlayer(newTilemap, playerSpawn); // Spawn player
 
-            enemy.GetComponent<EnemyController>().MoveEnenmy();
-
-            
-
-            newTilemap.gameObject.SetActive(true);
+            enemy.GetComponent<EnemyController>().MoveEnenmy(); // Spawn enemy
 
             
 
-            StartCoroutine(BlackoutOff());
+            newTilemap.gameObject.SetActive(true); // Turn on new map chunk
+
+            
+
+           // StartCoroutine(BlackoutOff()); // Blackout off
         }
 
         private IEnumerator BlackoutOff()
         {
 
-            blackout.gameObject.SetActive(false);
+           //blackout.gameObject.SetActive(false); // Blackout off
 
-            yield return null;
+            yield return null; 
         }
 
         STETilemap GenerateMapChunk(STETilemap inMap)

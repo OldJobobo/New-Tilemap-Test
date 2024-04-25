@@ -63,7 +63,7 @@ TextureImporter:
       213: -324297926315264752
     second: RogueTileset-001_19
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -84,6 +84,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -122,6 +123,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -162,6 +164,30 @@ TextureImporter:
   - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 512
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -520,6 +546,23 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      RogueTileset-001_9: -7367456947345457357
+      RogueTileset-001_15: 3078681405316864465
+      RogueTileset-001_11: -873821984060263470
+      RogueTileset-001_12: -6950349857543322872
+      RogueTileset-001_6: -6181009847377234681
+      RogueTileset-001_8: 1819514156814698036
+      RogueTileset-001_4: 3591447491329166795
+      RogueTileset-001_1: 4093451466780491421
+      RogueTileset-001_2: 5195380489227535648
+      RogueTileset-001_14: 4022116287266936655
+      RogueTileset-001_13: -7740762568372094626
+      RogueTileset-001_7: -4365090249937771813
+      RogueTileset-001_5: 1667406135710850134
+      RogueTileset-001_10: -1473424593492673706
+      RogueTileset-001_3: -5411301536069146280
+      RogueTileset-001_0: -1063308934770429177
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
